@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function findAvg(arr){
+        let sum = 0;
+        let result = 0;
+        for (let i = 0; i < arr.length; i++) {
+            sum = sum + arr[i];
+        }
+        result = sum/arr.length
+        document.write("Diem trung binh la: " + result)
+    }
+    let arr1 = [10,20]
+    findAvg(arr1)
+</script>
+</body>
+</html>
