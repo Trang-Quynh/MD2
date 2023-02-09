@@ -1,22 +1,8 @@
-const inventory = [
-
-    {type:   "machine", value: 5000},
-
-
-    {type:   "machine", value:  650},
-
-
-    {type:      "duck", value:   10},
-
-
-    {type: "furniture", value: 1200},
-
-
-    {type:   "machine", value:   77}
-
-
-]
-console.log(inventory.value)
-
+const marks = [
+  { alpha: 15, beta: 16},
+{ alpha: -31, beta: 19 }
+];
+const [alpha1, beta1 ]= marks;
+console.log(alpha1, beta1); // 15, 16
 
 
