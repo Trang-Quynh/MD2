@@ -13,11 +13,9 @@
     {type: "furniture", value: 1200},
     {type:   "machine", value:   77}
   ]
-  let inventoryValue = inventory.map((i)=>{return i.value})
-  console.log(inventoryValue)
+let inventoryValue = inventory.map((i)=>{return i.value});
   let sumValue = inventoryValue.reduce((a,b)=>{return a+b});
   console.log(sumValue)
-
 </script>
 </body>
 </html>
