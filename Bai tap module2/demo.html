@@ -13,25 +13,10 @@
     {type: "furniture", value: 1200},
     {type:   "machine", value:   77}
   ]
-let inventoryValue = inventory.map(function(x){return x.value})
-  console.log(inventoryValue);
-  let sumValue = inventoryValue.reduce(function(a,b){return  a + b});
+  let inventoryValue = inventory.map((i)=>{return i.value})
+  console.log(inventoryValue)
+  let sumValue = inventoryValue.reduce((a,b)=>{return a+b});
   console.log(sumValue)
-
-
-  //
-  // var orders = [
-  //   {name: "A" , quantity: 2, price: 100},
-  //   {name: "B" , quantity: 1, price: 200},
-  //   {name: "C" , quantity: 5, price: 150}
-  // ];
-  // var orderNames = orders.map(function(x){
-  //   return x.quantity*x.price;
-  // });
-  // var sumOrder = orderNames.reduce(function(x,y){
-  //   return x+y;
-  // });
-  // sumOrder;
 
 </script>
 </body>
