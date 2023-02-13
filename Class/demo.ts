@@ -1,24 +1,36 @@
-class Vehicle{
-    public name:string;
-    public seat:number;
-    constructor(name,seat) {
+class Person{
+    name:string
+    constructor(name:string) {
         this.name = name;
-        this.seat = seat
     }
-    get getName(){
-        return this.name
-    }
-    get getSeat(){
-        return this.seat;
+    eat():void{
+        console.log(this.name+" eats when hungry.")
     }
 }
-class Taxi extends Vehicle{
-    public lisencePlate:string;
-    constructor(name,seat,lisencePlate){
-        super(name,seat);
-        this.lisencePlate = lisencePlate;
+
+class Student extends Person{
+    // variables
+    rollnumber:number;
+
+    // constructors
+    constructor(rollnumber:number, name:string){
+        super(name); // calling Parent's constructor
+        this.rollnumber = rollnumber
+        // this.name = name1
     }
-    get getlisencePlate(){
-        return this.lisencePlate;
+
+    // functions
+    displayInformation():void{
+        console.log("Name : "+this.name+", Roll Number : "+this.rollnumber)
+    }
+
+    // overriding super class method
+    eat():void{
+        console.log(this.name+" eats during break.")
     }
 }
+
+var student1 = new Student(2, "Rohit")
+
+student1.displayInformation()
+student1.eat()
