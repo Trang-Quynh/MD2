@@ -29,5 +29,28 @@ class Point2D{
 
 let point2D = new Point2D(5,5);
 
-point2D.setXY(10,10);
-console.log(point2D.getXY())
+class Point3D extends Point2D{
+    z: number;
+    constructor(x:number, y:number,z:number ){
+        super(x,y)
+        this.z = z;
+    }
+    getZ():number{
+        return this.z;
+    }
+    setZ(z:number):void{
+        this.z = z;
+    }
+    getXYZ():object{
+       let xyz = {x:this.x, y:this.y, z:this.z}
+        return xyz;
+    }
+    setXYZ(x:number,y:number,z:number){
+        this.x = x;
+        this.y = y;
+        this.z = z
+    }
+
+}
+let point3D = new Point3D(5,5,5);
+console.log(point3D.getXYZ());
