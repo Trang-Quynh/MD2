@@ -23,7 +23,7 @@ class EmployeeManager {
     del(emId:number){
         // let em = EmployeeManager.employeeList.find((employee:Employee) => employee.id  === emId);
         // let index = EmployeeManager.employeeList.indexOf(em);'
-        let index = -1;
+        let index=-1;
         for (let i = 0; i < EmployeeManager.employeeList.length; i++) {
             if(EmployeeManager.employeeList[i].id == emId) {
                 index = i;
@@ -31,6 +31,14 @@ class EmployeeManager {
         }
         EmployeeManager.employeeList.splice(index,1);
     }
+    // del(emId:number) {
+    //     let emp = EmployeeManager.employeeList.find((employee: Employee) => employee.id == emId);
+    //     if (emp != undefined) {
+    //         let index = EmployeeManager.employeeList.indexOf(emp)
+    //         console.log(index)
+    //         EmployeeManager.employeeList.splice(index,1);
+    //     }
+    // }
     displayDetail(index:number){
         console.log(EmployeeManager.employeeList[index])
     }
