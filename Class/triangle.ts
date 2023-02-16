@@ -26,7 +26,7 @@ class Triangle extends Shape{
         return this.side3
     }
     getArea(){
-        let p = this.side1 + this.side2 + this.side3;
+        let p = (this.side1 + this.side2 + this.side3)/2;
         return Math.sqrt(p*(p-this.side1)*(p-this.side2)*(p-this.side3))
     }
     getPerimeter(){
