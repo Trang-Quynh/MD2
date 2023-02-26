@@ -62,7 +62,7 @@ function register() {
     let flag: boolean = false;
     do {
         let userName = input.question('enter name: ');
-        let regex = /^[a-zA-Z\-]+$/;
+        let regex = /^[a-z A-Z\-]+$/;
         let test = regex.test(userName);
         for (let i = 0; i < accountManager.listAccount.length; i++) {
             if (accountManager.listAccount[i].getUsername() == userName) {
@@ -78,7 +78,7 @@ function register() {
             let flag2: boolean = false;
             do {
                 let id = input.question(`nhap id: `);
-                regex = /^[a-zA-Z\-]+$/;
+                regex = /^[a-z A-Z\-]+$/;
                 test = regex.test(id);
                 for (let i = 0; i < accountManager.listAccount.length; i++) {
                     if (accountManager.listAccount[i].getId() == id) {
@@ -116,12 +116,12 @@ function register() {
         }
     } while (flag == false);
 }
-loginMenu()
+
 function main() {
         let choice;
         do {
             console.log(`
-        1. Them moi BST
+        1. Them BST
         2. Edit BST 
         3. Delete BST
         4. tim BST
@@ -131,8 +131,10 @@ function main() {
             choice = +input.question(`nhap lua chon: `)
             switch (choice) {
                 case 1:
+                    addCategory();
                     break;
                 case 2:
+                    editCategory();
                     break;
                 case 3:
                     break;
@@ -171,4 +173,110 @@ function deleteAccount() {
 function showAccount(){
     console.table(accountManager.findAllAccount());
 }
+function addCategory(){
+    let flag:boolean = false;
+    do{
+        let id = input.question(`Input id (nhap so, nhap bao nhieu so cung dc) : `)
+        let regex = /^[0-9]+$/;
+        let testCategoryId = regex.test(id);
+        let categoryIdAfterCheck:number;
+        for (let i = 0; i < categoryManager.getCategory().length; i++) {
+            if(categoryManager.getCategory()[i].getId() == id){
+                testCategoryId = false;
+                console.log(`Id da ton tai`);
+            }
+        }
+        if(testCategoryId == false){
+            console.log(`Nhap lai id: `)
+        }else{
+            categoryIdAfterCheck = id;
+            let flag2: boolean = false;
+            do {
+                let categoryName = input.question(`Nhap category name nhap chu cai co space: `);
+                regex = /^[a-z A-Z]+$/;
+                let testCategoryName = regex.test(categoryName);
+                let categoryNameAfterCheck:string;
+                for (let i = 0; i < categoryManager.getCategory().length; i++) {
+                    if (categoryManager.getCategory()[i].getName() == categoryName) {
+                        testCategoryName = false;
+                        console.log(`Category name da ton tai`);
+                    }
+                }
+                    if(testCategoryName == false){
+                        console.log(`nhap lai:`)
+                    }else{
+                        categoryNameAfterCheck = categoryName;
+                        let creator = currentAcc;
+                        let category = new Category(categoryIdAfterCheck,categoryNameAfterCheck,creator);
+                        categoryManager.addCategory(category);
+                        console.log(`Them thanh cong`);
+                        flag = true;
+                        flag2 = true;
+                    }
+                } while(flag2 == false)
+        }
+    }while(flag == false)
+}
+function editCategory(){
+    let choice;
+    do{
+        console.log(`
+        1. Hien thi category cua ban
+        2. Them sach vao category
+        3. Sua sach
+        4. Xoa sach
+        0. return to main menu`);
+        choice = +input.question(`Nhap lua chon: `)
+        switch (choice){
+            case 1:
+                displayCategoryOfCurrenAcc();
+                break;
+            case 2:
+                break
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+    }while(choice != 0);
+}
+// hien thi category da tao cua thang current acc
+function displayCategoryOfCurrenAcc(){
+    console.log(`-------Ds category of your acc------`)
+    let menu = '';
+    let count = 0;
+    for (let i = 0; i < categoryManager.getCategory().length; i++) {
+        if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+            count++;
+            menu += `${count}. Category Name: ${categoryManager.getCategory()[i].getName()}
+            Category Id: ${categoryManager.getCategory()[i].getId()}
+            Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
+            Number of book: ${categoryManager.getCategory()[i].getNumberOfBook()}\n`;
+        }
+    }
+    console.log(menu);
+    console.log(`0. Exit`)
+    let choice = +input.question("Nhap lua chon: ");
+    let count2 = 0;
+    if(choice == 0){
+        main();
+    }else{
+        for (let i = 0; i < categoryManager.getCategory().length; i++) {
+            if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+                count2++;
+                if(choice == count2){
+                    let selectedCategory = categoryManager.getCategory()[i];
+                    console.log(selectedCategory)
+                    return;
+                }
+            }
+        }
+    }
+}
+
+
+
+loginMenu();
+
+
 
