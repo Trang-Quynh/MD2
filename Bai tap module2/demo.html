@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+<script>
+class QuadraticEquation{
+    a;
+    b;
+    c;
+    constructor(a,b,c){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+    getter(){
+        document.write(this.a + " " + this.b + " " + this.c);
+    }
+    getDiscriminant(){
+        let delta = Math.pow(this.b,2) - 4*this.a*this.c
+            if(delta>0){
+            let r1 = (-this.b + Math.sqrt(delta))/2*this.a;
+            let r2 = (-this.b - Math.sqrt(delta))/2*this.a;
+                console.log(`The equation has two roots ${r1} and ${r2}`);
+        }else if(delta === 0){
+            let r = -this.b/2*this.a
+                console.log(`The equation has one roots ${r}`);
+        }else if(delta<0){
+            console.log("The equation has no roots")
+        }
+    }
+}
+
+let qua1 = new QuadraticEquation(1,2,3);
+
+console.log(qua1.getDiscriminant())
+</script>
 </body>
 </html>
