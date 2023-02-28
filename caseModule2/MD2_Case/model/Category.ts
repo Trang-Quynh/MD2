@@ -21,7 +21,7 @@ export class Category{
         return this.id
     }
     getNumberOfBook():number{
-        return this.numberOfBook;
+        return this.getListBook().length;
     }
     addBook(book:Book){
         this.listBook.push(book);

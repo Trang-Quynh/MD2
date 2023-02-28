@@ -494,18 +494,19 @@ let nameCategory = input.question(`Nhap ten cua category ban muon tim kiem: `);
         if(categoryManager.getCategory()[i].getName() == nameCategory){
             console.log(`1. ID: ${categoryManager.getCategory()[i].getId()}
             2. Name: ${categoryManager.getCategory()[i].getName()}
-            3. Creator: ${categoryManager.getCategory()[i].getCreator()}
+            3. Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
             4. Numbers of book: ${categoryManager.getCategory()[i].getNumberOfBook()}
             5. ListBook: 
              `);
             let listBook = '';
             for (let j = 0; j < categoryManager.getCategory()[i].getListBook().length; j++) {
-                listBook += `   ${j+1}. ID: ${categoryManager.getCategory()[i].getListBook()[j].getId()}
+                listBook += `   5.${j+1}. ID: ${categoryManager.getCategory()[i].getListBook()[j].getId()}
                 Name: ${categoryManager.getCategory()[i].getListBook()[j].getName()}
                 Author: ${categoryManager.getCategory()[i].getListBook()[j].getWriter()}
                 ReleaseDate: ${categoryManager.getCategory()[i].getListBook()[j].getReleaseDate()}\n
                 `
             }
+            console.log(listBook);
         }
     }
 }
