@@ -12,7 +12,7 @@ export class Category{
         this.id = id;
         this.name = name;
         this.creator = creator;
-        this.numberOfBook = 0;
+        this.numberOfBook = this.listBook.length;
     }
     getName():string{
         return this.name
@@ -25,7 +25,6 @@ export class Category{
     }
     addBook(book:Book){
         this.listBook.push(book);
-        this.numberOfBook++;
     }
     getListBook():Book[] {
         return this.listBook;

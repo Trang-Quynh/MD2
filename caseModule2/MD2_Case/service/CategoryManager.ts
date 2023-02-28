@@ -10,5 +10,8 @@ export class CategoryManager{
     getCategory(): Category[] {
         return this.categoryList;
     }
+    deleteCategory(index:number):void{
+        this.categoryList.splice(index)
+    }
 }
 
