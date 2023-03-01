@@ -15,7 +15,7 @@ function loginMenu(){
         1. Login
         2. Register
         0. Exit`);
-        choice = +input.question("Enter your selection:")
+        choice = +input.question("\nEnter your selection: ")
     switch (choice) {
         case 1:
             login();
@@ -48,7 +48,7 @@ function login(){
         1. Input again
         2. Register
         0. Return to main menu`);
-        let choice = +input.question(`Enter your selection: `);
+        let choice = +input.question(`\nEnter your selection: `);
         if(choice == 1){
             login();
         }else if(choice == 2){
@@ -77,8 +77,8 @@ function register() {
             userNameAfterCheck = userName;
             let flag2: boolean = false;
             do {
-                let id = input.question(`Input an ID that begins with the letter AC followed by three digits: ( like AC234`);
-                regex = /^AC[0-9]{3}$/;
+                let id = input.question(`Input an ID that begins with the letter ACC followed by three digits (like ACC234): `);
+                regex = /^ACC[0-9]{3}$/;
                 test = regex.test(id);
                 for (let i = 0; i < accountManager.listAccount.length; i++) {
                     if (accountManager.listAccount[i].getId() == id) {
@@ -106,7 +106,7 @@ function register() {
                             accountManager.add(account);
                             console.log(`Registration was successful. Please login!`)
                             currentAcc = account;
-                            login();
+                            loginMenu();
                             flag = true;
                             flag2 = true;
                             flag3 = true;
@@ -129,7 +129,7 @@ function main() {
         5. Account manager (for admin only)
         0. Return to login menu`
             )
-            choice = +input.question(`Enter your selection: `)
+            choice = +input.question(`\nEnter your selection: `)
             switch (choice) {
                 case 1:
                     addCategory();
@@ -150,7 +150,7 @@ function main() {
         } while (choice != 0)
 }
 function menuAccManager(){
-    if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang97`){
+    if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang1997`){
         console.log(`
          1. Display account list 
          2. Delete account

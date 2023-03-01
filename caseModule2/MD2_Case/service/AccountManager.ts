@@ -3,7 +3,7 @@ export class AccountManage{
     listAccount:Account[] = [];
 
     constructor() {
-        let accAdmin = new Account('Trang97','Quynh Trang', 'trang1997');
+        let accAdmin = new Account('Trang1997','Quynh Trang', 'trang1997');
         this.listAccount.push(accAdmin);
     }
 
