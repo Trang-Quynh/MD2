@@ -39,16 +39,16 @@ function login(){
         if (userName == inputName && inputId == id) {
             checkLogin = false;
             currentAcc = new Account(id,userName,password);
-            console.log('login success');
+            console.log('Login successful');
             main();
         }
     }
     if (checkLogin == true) {
-        console.log(`tai khoan khong ton tai. vui long nhap lai hoac dang ky moi.
-        1. Nhap lai
-        2. Dang ky moi
-        0. Ve menu chinh`);
-        let choice = +input.question(`Nhap lua chon: `);
+        console.log(`Account does not exist. Please try again or select register to create a new account.
+        1. Input again
+        2. Register
+        0. Return to main menu`);
+        let choice = +input.question(`Enter your selection: `);
         if(choice == 1){
             login();
         }else if(choice == 2){
@@ -58,53 +58,53 @@ function login(){
         }
     }
 }
-
 function register() {
     let flag: boolean = false;
     do {
-        let userName = input.question('enter name: ');
+        let userName = input.question('Enter your name (allow only alphabet input): ');
         let regex = /^[a-z A-Z\-]+$/;
         let test = regex.test(userName);
         for (let i = 0; i < accountManager.listAccount.length; i++) {
             if (accountManager.listAccount[i].getUsername() == userName) {
                 test = false;
-                console.log(`acc da ton tai`);
+                console.log(`This name has already been used.`);
             }
         }
         let userNameAfterCheck: string;
         if (test == false) {
-            console.log(`re enter name`)
+            console.log(`Name is not valid. Please try again: `)
         } else {
             userNameAfterCheck = userName;
             let flag2: boolean = false;
             do {
-                let id = input.question(`nhap id: `);
-                regex = /^[a-z A-Z\-]+$/;
+                let id = input.question(`Input an ID that begins with the letter AC followed by three digits: ( like AC234`);
+                regex = /^AC[0-9]{3}$/;
                 test = regex.test(id);
                 for (let i = 0; i < accountManager.listAccount.length; i++) {
                     if (accountManager.listAccount[i].getId() == id) {
                         test = false;
-                        console.log(`id da ton tai`);
+                        console.log(`This ID has already been in used. `);
                     }
                 }
                 let idAfterCheck:string;
                 if(test == false){
-                    console.log('nhap lai id');
+                    console.log('ID is not valid. Please try again! ');
                 }else{
                     idAfterCheck = id;
                     let passwordAfterCheck:string;
                     let flag3:boolean = false;
                     do {
-                        let password = input.question(`input pass: `);
+                        let password = input.question(`Input password (password must has 8 characters, 
+              at least one capital letters and one number: `);
                         regex =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{9,}$/;
                         test = regex.test(password);
                         if(test == false){
-                            console.log(`re enter pass:`)
+                            console.log(`Password is not valid. Please try again:`)
                         }else{
                             passwordAfterCheck = password;
                             let account = new Account(idAfterCheck,userNameAfterCheck,passwordAfterCheck);
                             accountManager.add(account);
-                            console.log(`dang ky thanh cong`)
+                            console.log(`Registration was successful. Please login!`)
                             currentAcc = account;
                             login();
                             flag = true;
@@ -122,14 +122,14 @@ function main() {
         let choice;
         do {
             console.log(`
-        1. Them BST
-        2. Edit BST 
-        3. Delete BST
-        4. tim BST (tim trong tat ca cac bst tim bang ten)
-        5. Quan ly tai khoan
+        1. Add new category
+        2. Edit your category
+        3. Delete your category
+        4. Find category from category list
+        5. Account manager (for admin only)
         0. Return to login menu`
             )
-            choice = +input.question(`nhap lua chon: `)
+            choice = +input.question(`Enter your selection: `)
             switch (choice) {
                 case 1:
                     addCategory();
@@ -152,10 +152,10 @@ function main() {
 function menuAccManager(){
     if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang97`){
         console.log(`
-         1. Hien thi danh sach tai khoan
-         2. Xoa tai khoan
+         1. Display account list 
+         2. Delete account
          0. Return to main menu`)
-        let choice = +input.question("Nhap lua chon: ")
+        let choice = +input.question("Enter your selection: ")
         if(choice == 1){
             showAccount();
             menuAccManager();
@@ -166,11 +166,11 @@ function menuAccManager(){
             main();
         }
     }else{
-        console.log(`Ban phai dang nhap bang tai khoan admin de thuc hien tac vu nay`);
+        console.log(`You must be an administrator of library to perform these tasks.`);
     }
 }
 function deleteAccount() {
-    let id = input.question(`Nhap id cua acc muon xoa: `)
+    let id = input.question(`Input account id you want to delete: `)
     accountManager.deleteById(id);
 }
 function showAccount(){
@@ -179,40 +179,40 @@ function showAccount(){
 function addCategory(){
     let flag:boolean = false;
     do{
-        let id = input.question(`Input id (nhap so, nhap bao nhieu so cung dc) : `)
-        let regex = /^[0-9]+$/;
+        let id = input.question(`Input category ID (digits only, 5 digits like: 12345) : `)
+        let regex = /^[0-9]{5}$/;
         let testCategoryId = regex.test(id);
         let categoryIdAfterCheck:number;
         for (let i = 0; i < categoryManager.getCategory().length; i++) {
             if(categoryManager.getCategory()[i].getId() == id){
                 testCategoryId = false;
-                console.log(`Id da ton tai`);
+                console.log(`This ID has already been in used.`);
             }
         }
         if(testCategoryId == false){
-            console.log(`Nhap lai id: `)
+            console.log(`ID is not valid. Please try again: `)
         }else{
             categoryIdAfterCheck = id;
             let flag2: boolean = false;
             do {
-                let categoryName = input.question(`Nhap category name nhap chu cai co space: `);
-                regex = /^[a-z A-Z]+$/;
+                let categoryName = input.question(`Input category name, allow only alphabet input: `);
+                regex = /^[a-z A-Z\-]+$/;
                 let testCategoryName = regex.test(categoryName);
                 let categoryNameAfterCheck:string;
                 for (let i = 0; i < categoryManager.getCategory().length; i++) {
                     if (categoryManager.getCategory()[i].getName() == categoryName) {
                         testCategoryName = false;
-                        console.log(`Category name da ton tai`);
+                        console.log(`Category name has already been in used.`);
                     }
                 }
                     if(testCategoryName == false){
-                        console.log(`nhap lai:`)
+                        console.log(`Category name has already been in used.`)
                     }else{
                         categoryNameAfterCheck = categoryName;
                         let creator = currentAcc;
                         let category = new Category(categoryIdAfterCheck,categoryNameAfterCheck,creator);
                         categoryManager.addCategory(category);
-                        console.log(`Them thanh cong`);
+                        console.log(`A new category has been successfully added to library.`);
                         flag = true;
                         flag2 = true;
                     }
@@ -224,9 +224,9 @@ function editCategory(){
     let choice;
     do{
         console.log(`
-        1. Hien thi category cua ban
-        0. return to main menu`);
-        choice = +input.question(`Nhap lua chon: `)
+        1. Show your category to perform tasks.
+        0. Return to main menu`);
+        choice = +input.question(`Enter your selection: `)
         switch (choice){
             case 1:
                 displayCategoryOfCurrenAcc();
@@ -235,7 +235,7 @@ function editCategory(){
     }while(choice != 0);
 }
 function displayCategoryOfCurrenAcc(){
-    console.log(`-------Ds category of your acc------`)
+    console.log(`-------Category list of your account------`)
     let menu = '';
     let count = 0;
     for (let i = 0; i < categoryManager.getCategory().length; i++) {
@@ -244,12 +244,12 @@ function displayCategoryOfCurrenAcc(){
             menu += `${count}. Category Name: ${categoryManager.getCategory()[i].getName()}
             Category Id: ${categoryManager.getCategory()[i].getId()}
             Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            Number of book: ${categoryManager.getCategory()[i].getNumberOfBook()}\n`;
+            Number of books: ${categoryManager.getCategory()[i].getNumberOfBook()}\n`;
         }
     }
     console.log(menu);
     console.log(`0. Exit`)
-    let choice = +input.question("Nhap lua chon: ");
+    let choice = +input.question("Enter your selection: ");
     let count2 = 0;
     if(choice == 0){
         main();
@@ -267,7 +267,7 @@ function displayCategoryOfCurrenAcc(){
     }
 }
 function deleteCategoryOfCurrentAcc(){
-    console.log(`-------Chon category muon xoa------`)
+    console.log(`-------Select category you want to delete------`)
     let menu = '';
     let count = 0;
     for (let i = 0; i < categoryManager.getCategory().length; i++) {
@@ -279,7 +279,7 @@ function deleteCategoryOfCurrentAcc(){
     }
     console.log(menu);
     console.log(`0. Exit`)
-    let choice = +input.question("Nhap lua chon: ");
+    let choice = +input.question("Enter your selection: ");
     let count2 = 0;
     if(choice == 0){
         main();
@@ -289,7 +289,7 @@ function deleteCategoryOfCurrentAcc(){
                 count2++;
                 if(choice == count2){
                     let selectedCategory = categoryManager.getCategory()[i];
-                    let choiceYesNo = +input.question(`Ban co chac chan muon xoa ${selectedCategory.getName()}
+                    let choiceYesNo = +input.question(`Are you sure you want to delete ${selectedCategory.getName()}
                      1. Yes
                      2. No 
                      `);
@@ -297,7 +297,7 @@ function deleteCategoryOfCurrentAcc(){
                         main();
                     }else if(choiceYesNo == 1){
                         categoryManager.deleteCategory(i);
-                        console.log(`Xoa thanh cong`);
+                        console.log(`Successfully deleted`);
                         main();
                     }
                 }
@@ -308,14 +308,14 @@ function deleteCategoryOfCurrentAcc(){
 function displayBookMenu(selectedCategory:Category){
     let choice;
     do{
-        console.log(`------edit book cua category ${selectedCategory.getName()}-----
+        console.log(`------Menu edit book of category ${selectedCategory.getName()}-----
         1. Add book
-        2. Display list book
+        2. Show list book
         3. Edit book
         4. Delete book
         0. Return to display menu
         `)
-        choice = +input.question(`Nhap lua chon: `);
+        choice = +input.question(`Enter your selection: `);
         switch (choice){
             case 1:
                 addBookToCategory(selectedCategory)
@@ -334,37 +334,37 @@ function displayBookMenu(selectedCategory:Category){
 }
 function addBookToCategory(selectedCategory:Category) {
     if (selectedCategory.getListBook().length == 0) {
-        let id = input.question(`Nhap id: `);
-        let name = input.question(`Nhap name: `);
-        let writer = input.question(`Nhap ten tac gia: `);
-        let releaseDate = input.question(`Nhap releaseDate:  `);
+        let id = input.question(`Input ID: `);
+        let name = input.question(`Input name: `);
+        let writer = input.question(`Input author's name: `);
+        let releaseDate = input.question(`Input release date:  `);
         let book = new Book(id, name, writer, releaseDate);
         selectedCategory.addBook(book);
-        console.log(`Them thanh cong`)
+        console.log(`A new book was successfully added to category.`)
     }else{
         let flag: boolean = false
         do {
-            let id = input.question(`Nhap id cho sach: `);
+            let id = input.question(`Input ID: `);
             let idAfterCheck;
                 for (let i = 0; i < selectedCategory.getListBook().length; i++) {
                     if (id == selectedCategory.getListBook()[i].getId()) {
-                        console.log(`Id da ton tai.`);
+                        console.log(`This ID has been in used.`);
                     } else {
                         idAfterCheck = id;
                         let flag2: boolean = false;
                         do {
-                            let name = input.question(`Nhap name: `);
+                            let name = input.question(`Input name: `);
                             let nameAfterCheck;
                             for (let i = 0; i < selectedCategory.getListBook().length; i++) {
                                 if (name == selectedCategory.getListBook()[i].getName()) {
-                                    console.log(`name da ton tai.`);
+                                    console.log(`This name has been in used.`);
                                 } else {
                                     nameAfterCheck = name;
-                                    let writer = input.question(`Nhap ten tac gia: `);
-                                    let releaseDate = input.question(`Nhap releaseDate:  `);
+                                    let writer = input.question(`Input author's name: `);
+                                    let releaseDate = input.question(`Input release date:  `);
                                     let book = new Book(idAfterCheck, nameAfterCheck, writer, releaseDate);
                                     selectedCategory.addBook(book);
-                                    console.log(`Them sach thanh cong. `)
+                                    console.log(`A new book was successfully added to category.`)
                                     flag = true;
                                     flag2 = true;
                                     return;
@@ -378,17 +378,17 @@ function addBookToCategory(selectedCategory:Category) {
 }
 
 function displayBookInformation(selectedCategory:Category){
-    console.log(`------list book in ${selectedCategory.getName()}------`);
+    console.log(`------List book in ${selectedCategory.getName()}------`);
     let menu = '';
     for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-        menu += `${i + 1}. Book id: ${selectedCategory.getListBook()[i].getId()}
+        menu += `${i + 1}. Book ID: ${selectedCategory.getListBook()[i].getId()}
         Book name: ${selectedCategory.getListBook()[i].getName()}
         Author: ${selectedCategory.getListBook()[i].getWriter()}
-        ReleaseDate: ${selectedCategory.getListBook()[i].getReleaseDate()}\n`
+        Release Date: ${selectedCategory.getListBook()[i].getReleaseDate()}\n`
     }
     console.log(menu);
     console.log(`0. Exit`);
-    let choice = +input.question(`Chon 0 de thoat `);
+    let choice = +input.question(`Select 0 to exit. `);
     if(choice == 0){
         displayBookMenu(selectedCategory);
     }
@@ -397,11 +397,11 @@ function editBookInCategory(selectedCategory:Category) {
     console.log(`-----Select a book to you want to edit-----`);
     let menu = '';
     for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-        menu += `${i + 1}. Book id: ${selectedCategory.getListBook()[i].getId()} Book name: ${selectedCategory.getListBook()[i].getName()}\n`
+        menu += `${i + 1}. Book ID: ${selectedCategory.getListBook()[i].getId()} Book name: ${selectedCategory.getListBook()[i].getName()}\n`
     }
     console.table(menu);
     console.log(`0. Exit`);
-    let choice = +input.question(`Nhap lua chon : `);
+    let choice = +input.question(`Input your selection: `);
     if(choice == 0){
         displayBookMenu(selectedCategory);
     }else{
@@ -413,13 +413,13 @@ function editBookInCategory(selectedCategory:Category) {
 }
 function editBookDetail(selectedBook:Book){
     let choice;
-        console.log(`----Sua thong tin ${selectedBook.getName()}---
-        1. Sua ten sach
-        2. Sua id sach 
-        3. Sua tac gia 
-        4. Sua ngay phat hanh
-        0. Thoat`);
-        choice = input.question(`Nhap lua chon: `);
+        console.log(`----Edit information of ${selectedBook.getName()}---
+        1. Edit book name
+        2. Edit book ID
+        3. Edit author
+        4. Edit release date
+        0. Exit`);
+        choice = input.question(`Enter your selection: `);
         if(choice == 1){
             editBookName(selectedBook);
             editBookDetail(selectedBook);
@@ -437,27 +437,27 @@ function editBookDetail(selectedBook:Book){
         }
 }
 function editBookName(selectedBook:Book){
-    let name = input.question(`Nhap ten moi: `);
+    let name = input.question(`Enter new name: `);
     selectedBook.setName(name);
-    console.log(`Sua ten thanh cong. `)
+    console.log(`Name has been successfully updated. `)
     console.table(selectedBook);
 }
 function editBookId(selectedBook:Book){
-    let id = input.question('Nhap id moi: ');
+    let id = input.question('Enter new ID: ');
     selectedBook.setId(id);
-    console.log("Sua id thanh cong. ");
+    console.log("ID has been successfully updated. ");
     console.table(selectedBook);
 }
 function editBookAuthor(selectedBook:Book){
-    let author = input.question('Nhap ten tac gia: ');
+    let author = input.question('Input author name: ');
     selectedBook.setWriter(author);
-    console.log('Sua ten tac gia thanh cong. ');
+    console.log('Author has been successfully updated. ');
     console.table(selectedBook);
 }
 function editBookReleaseDate(selectedBook:Book){
-    let releaseDate = input.question('Nhap ten tac gia: ');
+    let releaseDate = input.question('Input new release date: ');
     selectedBook.setReleaseDate(releaseDate);
-    console.log('Sua ngay phat hanh thanh cong. ');
+    console.log('Release date has been successfully updated. ');
     console.table(selectedBook);
 }
 function deleteBookInCategory(selectedCategory:Category) {
@@ -469,19 +469,19 @@ function deleteBookInCategory(selectedCategory:Category) {
         menu += `${i + 1}. Name ${selectedCategory.getListBook()[i].getName()}`
     }
     console.log(`${menu} \n 0. Exit`)
-    choice = +input.question(`Chon sach muon xoa: `);
+    choice = +input.question(`Select book you want to delete: `);
     if (choice == 0) {
         displayBookMenu(selectedCategory)
     }else{
         indexOfBook = choice - 1;
         selectedBook = selectedCategory.getListBook()[indexOfBook];
-        console.log(`ban co chac chan muon xoa sach ${selectedBook.getName()} khoi category khong:
+        console.log(`Are you sure you want to delete ${selectedBook.getName()}:
                                  1. Yes 
                                  2. No `);
-        let choice1 = +input.question(`Nhap lua chon: `)
+        let choice1 = +input.question(`Input your selection: `)
         if (choice1 == 1) {
             selectedCategory.getListBook().splice(indexOfBook, 1);
-            console.log(`Xoa thanh cong. `)
+            console.log(`Book has been deleted from category. `)
         } else if (choice1 == 2) {
             editBookDetail(selectedBook);
         }
@@ -489,13 +489,13 @@ function deleteBookInCategory(selectedCategory:Category) {
 }
 
 function findCategoryByName(){
-let nameCategory = input.question(`Nhap ten cua category ban muon tim kiem: `);
+let nameCategory = input.question(`Input name of category you want to find: `);
     for (let i = 0; i < categoryManager.getCategory().length; i++) {
         if(categoryManager.getCategory()[i].getName() == nameCategory){
             console.log(`1. ID: ${categoryManager.getCategory()[i].getId()}
             2. Name: ${categoryManager.getCategory()[i].getName()}
             3. Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            4. Numbers of book: ${categoryManager.getCategory()[i].getNumberOfBook()}
+            4. Number of books: ${categoryManager.getCategory()[i].getNumberOfBook()}
             5. ListBook: 
              `);
             let listBook = '';
@@ -503,7 +503,7 @@ let nameCategory = input.question(`Nhap ten cua category ban muon tim kiem: `);
                 listBook += `   5.${j+1}. ID: ${categoryManager.getCategory()[i].getListBook()[j].getId()}
                 Name: ${categoryManager.getCategory()[i].getListBook()[j].getName()}
                 Author: ${categoryManager.getCategory()[i].getListBook()[j].getWriter()}
-                ReleaseDate: ${categoryManager.getCategory()[i].getListBook()[j].getReleaseDate()}\n
+                Release date: ${categoryManager.getCategory()[i].getListBook()[j].getReleaseDate()}\n
                 `
             }
             console.log(listBook);
