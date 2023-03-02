@@ -3,7 +3,7 @@ export class AccountManage{
     listAccount:Account[] = [];
 
     constructor() {
-        let accAdmin = new Account('Trang1997','Quynh Trang', 'trang1997');
+        let accAdmin = new Account('Trang1997','Quynh Trang', 'trang1997', 'ON');
         this.listAccount.push(accAdmin);
     }
 
@@ -40,7 +40,7 @@ export class AccountManage{
     findAllAccount() {
         let strAccount = ``
         for (let i = 0; i < this.listAccount.length; i++) {
-            strAccount += `${i + 1}. UserName: ${this.listAccount[i].getUsername()} . Password: ${this.listAccount[i].getPassword()}\n`
+            strAccount += `${i + 1}. ID: ${this.listAccount[i].getId()} - UserName: ${this.listAccount[i].getUsername()} - Password: ${this.listAccount[i].getPassword()} - Status: ${this.listAccount[i].getStatus()}\n`
         }
         return strAccount;
     }

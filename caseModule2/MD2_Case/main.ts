@@ -26,26 +26,32 @@ function loginMenu(){
         }
     }while(choice != 0)
 }
-
+// thêm điều kiện tài khoản bị khóa ở phần đăng nhập
 function login(){
     console.log(`-----Login-----`);
     let checkLogin = true;
+    let checkLogin1 = true;
     let inputName = input.question("Enter username: ");
     let inputId = input.question(`Enter id: `);
+    let inputPassword = input.question(`Enter password: `)
     for (let i = 0; i < accountManager.listAccount.length; i++) {
         let userName = accountManager.listAccount[i].getUsername();
         let id = accountManager.listAccount[i].getId();
         let password = accountManager.listAccount[i].getPassword();
-        if (userName == inputName && inputId == id) {
+        let status = accountManager.listAccount[i].getStatus();
+        if (userName == inputName && inputId == id && password == inputPassword && status == "ON") {
             checkLogin = false;
-            currentAcc = new Account(id,userName,password);
+            currentAcc = new Account(id,userName,password,status);
             console.log('Login successful');
             main();
+        }else if(userName == inputName && inputId == id && status == "OFF"){
+            console.log(`Your account has been locked. To unlock your account, contact your administrator.`);
+            checkLogin1 = false;
         }
     }
-    if (checkLogin == true) {
+    if (checkLogin == true && checkLogin1 == true) {
         console.log(`Account does not exist. Please try again or select register to create a new account.
-        1. Input again
+        1. Try to login again
         2. Register
         0. Return to main menu`);
         let choice = +input.question(`\nEnter your selection: `);
@@ -102,9 +108,10 @@ function register() {
                             console.log(`Password is not valid. Please try again:`)
                         }else{
                             passwordAfterCheck = password;
-                            let account = new Account(idAfterCheck,userNameAfterCheck,passwordAfterCheck);
+                            let status:string = 'ON';
+                            let account = new Account(idAfterCheck,userNameAfterCheck,passwordAfterCheck,status);
                             accountManager.add(account);
-                            console.log(`Registration was successful. Please login!`)
+                            console.log(`\nRegistration was successful. Please login!`)
                             currentAcc = account;
                             loginMenu();
                             flag = true;
@@ -152,23 +159,67 @@ function main() {
 function menuAccManager(){
     if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang1997`){
         console.log(`
-         1. Display account list 
+         1. Show account list 
          2. Delete account
+         3. Change account status
          0. Return to main menu`)
-        let choice = +input.question("Enter your selection: ")
+        let choice = +input.question("\nEnter your selection: ")
         if(choice == 1){
             showAccount();
             menuAccManager();
         }else if(choice == 2){
             deleteAccount();
             menuAccManager();
-        }if(choice == 0){
+        }else if(choice == 3){
+            onOffAccount();
+            menuAccManager();
+        } else if(choice == 0){
             main();
         }
     }else{
-        console.log(`You must be an administrator of library to perform these tasks.`);
+        console.log(`\nYou must be an administrator of library to perform these tasks.`);
     }
 }
+
+// function on off status;
+function onOffAccount(){
+    let menu = '';
+    for (let i = 0; i < accountManager.listAccount.length; i++) {
+        menu += `${i+1}. ID: ${accountManager.listAccount[i].getId()} - Name: ${accountManager.listAccount[i].getUsername()} - Status: ${accountManager.listAccount[i].getStatus()}\n`
+    }
+    console.table(menu);
+    console.log(`Enter 0 to exit: `);
+    let choice = +input.question(`\nSelect the account you want to change status: `);
+    if(choice == 0){
+        menuAccManager();
+    }else{
+        let selectedAcc = accountManager.listAccount[choice - 1];
+        if(selectedAcc.getStatus() == `ON`){
+            console.log(`Do you want to disable ${selectedAcc.getUsername()}: 1.Yes\t2.No`);
+            let choiceYesNo1 = +input.question(`Enter your selection: `);
+            if(choiceYesNo1 == 1){
+                selectedAcc.setStatus(`OFF`);
+                console.log(`Account ${selectedAcc.getUsername()} was disabled. `);
+                menuAccManager();
+            }else if(choiceYesNo1 == 2){
+                menuAccManager();
+            }
+        }else if(selectedAcc.getStatus() == 'OFF'){
+            console.log(`Do you want to enable ${selectedAcc.getUsername()}: 1.Yes\t2.No`);
+            let choiceYesNo2 = +input.question(`Enter your selection: `);
+            if(choiceYesNo2 == 1){
+                selectedAcc.setStatus('ON');
+                console.log(`Account ${selectedAcc.getUsername()} was enabled. `);
+                menuAccManager();
+            }else if(choiceYesNo2 == 2){
+                menuAccManager();
+            }
+        }
+    }
+}
+
+
+
 function deleteAccount() {
     let id = input.question(`Input account id you want to delete: `)
     accountManager.deleteById(id);
