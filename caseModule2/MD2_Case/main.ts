@@ -59,7 +59,7 @@ function login(){
             login();
         }else if(choice == 2){
             register()
-        }else{
+        }else if(choice == 0){
             loginMenu();
         }
     }
@@ -158,30 +158,49 @@ function main() {
 }
 function menuAccManager(){
     if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang1997`){
-        console.log(`
-         1. Show account list 
-         2. Delete account
-         3. Change account status
-         0. Return to main menu`)
-        let choice = +input.question("\nEnter your selection: ")
-        if(choice == 1){
-            showAccount();
-            menuAccManager();
-        }else if(choice == 2){
-            deleteAccount();
-            menuAccManager();
-        }else if(choice == 3){
-            onOffAccount();
-            menuAccManager();
-        } else if(choice == 0){
-            main();
-        }
+        let choice;
+        do{
+            console.log(`
+            1. Show account list 
+            2. Delete account
+            3. Change account status
+            0. Return to main menu`);
+            choice = +input.question("\nEnter your selection: ");
+            switch (choice){
+                case 1:
+                    showAccount();
+                    break;
+                case 2:
+                    deleteAccount();
+                    break;
+                case 3:
+                    onOffAccount();
+                    break;
+            }
+        }while(choice != 0)
+        // console.log(`
+        //  1. Show account list
+        //  2. Delete account
+        //  3. Change account status
+        //  0. Return to main menu`)
+        // let choice = +input.question("\nEnter your selection: ")
+        // if(choice == 1){
+        //     showAccount();
+        //     menuAccManager();
+        // }else if(choice == 2){
+        //     deleteAccount();
+        //     menuAccManager();
+        // }else if(choice == 3){
+        //     onOffAccount();
+        //     menuAccManager();
+        // } else if(choice == 0){
+        //     main();
+        // }
     }else{
         console.log(`\nYou must be an administrator of library to perform these tasks.`);
     }
 }
 
-// function on off status;
 function onOffAccount(){
     let menu = '';
     for (let i = 0; i < accountManager.listAccount.length; i++) {
