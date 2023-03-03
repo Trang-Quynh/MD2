@@ -1,11 +1,11 @@
-import {Category} from "./model/Category";
-import {CategoryManager} from "./service/CategoryManager";
+import {Album} from "./model/Album";
+import {AlbumManager} from "./service/AlbumManager";
 import {AccountManager} from "./service/AccountManager";
 import {Account} from "./model/Account";
 import {Song} from "./model/Song";
 // @ts-ignore
 let input = require(`readline-sync`);
-let categoryManager = new CategoryManager();
+let albumManager = new AlbumManager();
 let accountManager = new AccountManager();
 let currentAcc:Account;
 function loginMenu(){
@@ -69,41 +69,42 @@ function register() {
     do {
         let userName = input.question('Enter your name (allow only alphabet input): ');
         let regex = /^[a-z A-Z\-]+$/;
-        let test = regex.test(userName);
+        let testName = regex.test(userName);
+        let userNameAfterCheck:string;
         for (let i = 0; i < accountManager.listAccount.length; i++) {
             if (accountManager.listAccount[i].getUsername() == userName) {
-                // test = false;
-                console.log(`This name has already been used.`);
+                console.log(`This name has already been used. Input again. `);
+                register();
             }
         }
-        let userNameAfterCheck:string;
-        if (test == false) {
+        if (testName == false) {
             console.log(`Name is not valid. Please try again: `);
-        } else {
+        }else{
             userNameAfterCheck = userName;
             let flag2:boolean = false;
             do {
                 let id = input.question(`Input an ID that begins with the letter ACC followed by three digits (like ACC234): `);
                 regex = /^ACC[0-9]{3}$/;
-                test = regex.test(id);
+                let testId = regex.test(id);
+                let flagCheckId:boolean = false;
                 for (let i = 0; i < accountManager.listAccount.length; i++) {
                     if (accountManager.listAccount[i].getId() == id) {
-                        test = false;
-                        console.log(`This ID has already been in used. `);
+                        flagCheckId = true;
+                        console.log(`This ID has already been in used. Input again. `);
                     }
                 }
                 let idAfterCheck:string;
-                if(test == false){
+                if(testId == false && flagCheckId !== true){
                     console.log('ID is not valid. Please try again. ');
-                }else{
+                }else if(testId == true && flagCheckId !== true){
                     idAfterCheck = id;
                     let passwordAfterCheck:string;
                     let flag3:boolean = false;
                     do {
                         let password = input.question(`Input password (password must has 8 characters, at least one capital letters and one number: `);
                         regex =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{9,}$/;
-                        test = regex.test(password);
-                        if(test == false){
+                        let testPasWord = regex.test(password);
+                        if(testPasWord == false){
                             console.log(`Password is not valid. Please try again.`);
                         }else{
                             passwordAfterCheck = password;
@@ -128,32 +129,40 @@ function main() {
         let choice;
         do {
             console.log(`\n------Main Menu-------\n
-        1. Add new category
-        2. Edit your category
-        3. Delete your category
-        4. Find category from category list
-        5. Account manager (for admin only)
+        1. Add new Album
+        2. Edit your Album
+        3. Delete your Album
+        4. Find Album from Album list
+        5. Show all Album
+        6. Account manager (for admin only)
         0. Back to previous menu`
             )
             choice = +input.question(`\nEnter your selection: `);
             switch (choice) {
                 case 1:
-                    addCategory();
+                    addAlbum();
                     break;
                 case 2:
-                    editCategory();
+                    editAlbum();
                     break;
                 case 3:
-                    deleteCategoryOfCurrentAcc();
+                    deleteAlbumOfCurrentAcc();
                     break;
                 case 4:
-                    findCategoryByName();
+                    findAlbumByName();
                     break;
                 case 5:
+                    showAllAlbum();
+                    break;
+                case 6:
                     menuAccManager();
                     break;
             }
         } while (choice != 0);
+}
+function showAllAlbum(){
+    albumManager.showAll()
+    main();
 }
 function menuAccManager(){
     if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang1997`){
@@ -226,78 +235,77 @@ function showAccount(){
     console.log(accountManager.findAllAccount());
     main();
 }
-function addCategory(){
+function addAlbum(){
     let flag:boolean = false;
     do{
-        let id = input.question(`Input category ID (digits only, 5 digits like: 12345) : `);
-        let regex = /^[0-9]{5}$/;
-        let testCategoryId = regex.test(id);
-        let categoryIdAfterCheck:number;
-        for (let i = 0; i < categoryManager.getCategory().length; i++) {
-            if(categoryManager.getCategory()[i].getId() == id){
-                // testCategoryId = false;
+        let id = input.question(`Input an ID that begins with the letter AB followed by three digits (like AB123): `);
+        let regex = /^AB[0-9]{3}$/;
+        let testAlbumId = regex.test(id);
+        let AlbumIdAfterCheck:string;
+        for (let i = 0; i < albumManager.getAlbum().length; i++) {
+            if(albumManager.getAlbum()[i].getId() == id){
+                // testAlbumId = false;
                 console.log(`This ID has already been in used. Input again.`);
-                addCategory();
+                addAlbum();
             }
         }
-        if(testCategoryId == false){
+        if(testAlbumId == false){
             console.log(`ID is not valid. Please try again. `);
         }else{
-            categoryIdAfterCheck = id;
+            AlbumIdAfterCheck = id;
             let flag2: boolean = false;
             do {
-                let categoryName = input.question(`Input category name, allow alphabet, digits and hyphens: `);
-                regex = /^[0-9 a-z A-Z\-]+$/;
-                let testCategoryName = regex.test(categoryName);
-                let categoryNameAfterCheck:string;
+                let AlbumName = input.question(`Input Album name, allow alphabet, digits and hyphens: `);
+                regex = /^[0-9 a-zA-Z\-]+$/;
+                let testAlbumName = regex.test(AlbumName);
+                let AlbumNameAfterCheck:string;
                 let flagCheckName:boolean = false;
-                for (let i = 0; i < categoryManager.getCategory().length; i++) {
-                    if (categoryManager.getCategory()[i].getName() == categoryName) {
-                        // testCategoryName = false;
+                for (let i = 0; i < albumManager.getAlbum().length; i++) {
+                    if (albumManager.getAlbum()[i].getName() == AlbumName) {
                         flagCheckName = true;
-                        console.log(`Category name has already been in used. Input again.`);
+                        console.log(`Album name has already been in used. Input again.`);
                     }
                 }
-                    if(testCategoryName == false && flagCheckName !== true){
-                        console.log(`Category name is not valid. Please try again.`);
-                    }else if(testCategoryName == true && flagCheckName !== true){
-                        categoryNameAfterCheck = categoryName;
+                    if(testAlbumName == false && flagCheckName !== true){
+                        console.log(`Album name is not valid. Please try again.`);
+                    }else if(testAlbumName == true && flagCheckName !== true){
+                        AlbumNameAfterCheck = AlbumName;
                         let creator = currentAcc;
-                        let category = new Category(categoryIdAfterCheck,categoryNameAfterCheck,creator);
-                        categoryManager.addCategory(category);
+                        let album = new Album(AlbumIdAfterCheck,AlbumNameAfterCheck,creator);
+                        albumManager.addAlbum(album);
                         flag = true;
                         flag2 = true;
-                        console.log(`A new category has been successfully added to library.`);
+                        console.log(`A new Album has been successfully added to library.`);
                     }
                 }while(flag2 == false);
         }
     }while(flag == false);
 }
-function editCategory(){
+function editAlbum(){
     let choice;
     do{
         console.log(`
-        1. Show your category to perform tasks.
+        1. Show your Album to perform tasks.
         0. Return to main menu`);
         choice = +input.question(`\nEnter your selection: `);
         switch (choice){
             case 1:
-                displayCategoryOfCurrenAcc();
+                displayAlbumOfCurrenAcc();
                 break;
         }
     }while(choice != 0);
 }
-function displayCategoryOfCurrenAcc(){
-    console.log(`-------Category list of your account------`);
+function displayAlbumOfCurrenAcc(){
+    console.log(`-------Album list of your account------`);
     let menu = '';
     let count = 0;
-    for (let i = 0; i < categoryManager.getCategory().length; i++) {
-        if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+    for (let i = 0; i < albumManager.getAlbum().length; i++) {
+        if(albumManager.getAlbum()[i].getCreator() == currentAcc){
             count++;
-            menu += `${count}. Category Name: ${categoryManager.getCategory()[i].getName()}
-            ID: ${categoryManager.getCategory()[i].getId()}
-            Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            Number of Songs: ${categoryManager.getCategory()[i].getNumberOfSong()}\n`;
+            menu += `${count}. Album Name: ${albumManager.getAlbum()[i].getName()}
+            ID: ${albumManager.getAlbum()[i].getId()}
+            Creator: ${albumManager.getAlbum()[i].getCreator().getUsername()}
+            Number of Songs: ${albumManager.getAlbum()[i].getNumberOfSong()}\n`;
         }
     }
     console.log(menu);
@@ -307,27 +315,27 @@ function displayCategoryOfCurrenAcc(){
     if(choice == 0){
         main();
     }else{
-        for (let i = 0; i < categoryManager.getCategory().length; i++) {
-            if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+        for (let i = 0; i < albumManager.getAlbum().length; i++) {
+            if(albumManager.getAlbum()[i].getCreator() == currentAcc){
                 count2++;
                 if(choice == count2){
-                    let selectedCategory = categoryManager.getCategory()[i];
-                    console.log(selectedCategory);
-                    displaySongMenu(selectedCategory);
+                    let selectedAlbum = albumManager.getAlbum()[i];
+                    console.log(selectedAlbum);
+                    displaySongMenu(selectedAlbum);
                 }
             }
         }
     }
 }
-function deleteCategoryOfCurrentAcc(){
-    console.log(`-------Select category you want to delete------`);
+function deleteAlbumOfCurrentAcc(){
+    console.log(`-------Select Album you want to delete------`);
     let menu = '';
     let count = 0;
-    for (let i = 0; i < categoryManager.getCategory().length; i++) {
-        if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+    for (let i = 0; i < albumManager.getAlbum().length; i++) {
+        if(albumManager.getAlbum()[i].getCreator() == currentAcc){
             count++;
-            menu += `${count}. Category Name: ${categoryManager.getCategory()[i].getName()}
-            Category Id: ${categoryManager.getCategory()[i].getId()} \n`;
+            menu += `${count}. Album Name: ${albumManager.getAlbum()[i].getName()}
+            Album Id: ${albumManager.getAlbum()[i].getId()} \n`;
         }
     }
     console.log(menu);
@@ -337,19 +345,19 @@ function deleteCategoryOfCurrentAcc(){
     if(choice == 0){
         main();
     }else{
-        for (let i = 0; i < categoryManager.getCategory().length; i++) {
-            if(categoryManager.getCategory()[i].getCreator() == currentAcc){
+        for (let i = 0; i < albumManager.getAlbum().length; i++) {
+            if(albumManager.getAlbum()[i].getCreator() == currentAcc){
                 count2++;
                 if(choice == count2){
-                    let selectedCategory = categoryManager.getCategory()[i];
-                    let choiceYesNo = +input.question(`Are you sure you want to delete ${selectedCategory.getName()}
+                    let selectedAlbum = albumManager.getAlbum()[i];
+                    let choiceYesNo = +input.question(`Are you sure you want to delete ${selectedAlbum.getName()}
                      1. Yes
                      2. No 
                      `);
                     if(choiceYesNo == 0) {
                         main();
                     }else if(choiceYesNo == 1){
-                        categoryManager.deleteCategory(i);
+                        albumManager.deleteAlbum(i);
                         console.log(`Successfully deleted`);
                         main();
                     }
@@ -358,10 +366,10 @@ function deleteCategoryOfCurrentAcc(){
         }
     }
 }
-function displaySongMenu(selectedCategory:Category){
+function displaySongMenu(selectedAlbum:Album){
     let choice;
     do{
-        console.log(`------Menu edit Song of category ${selectedCategory.getName()}-----
+        console.log(`------Menu edit Song of Album ${selectedAlbum.getName()}-----
         1. Add Song
         2. Show list Song
         3. Edit Song
@@ -371,36 +379,46 @@ function displaySongMenu(selectedCategory:Category){
         choice = +input.question(`Enter your selection: `);
         switch (choice){
             case 1:
-                addSongToCategory(selectedCategory);
+                addSongToAlbum(selectedAlbum);
                 break;
             case 2:
-                displaySongInformation(selectedCategory);
+                displaySongInformation(selectedAlbum);
                 break;
             case 3:
-                editSongInCategory(selectedCategory);
+                editSongInAlbum(selectedAlbum);
                 break;
             case 4:
-                deleteSongInCategory(selectedCategory);
+                deleteSongInAlbum(selectedAlbum);
                 break;
         }
     }while(choice != 0);
 }
-function addSongToCategory(selectedCategory:Category) {
-    if (selectedCategory.getListSong().length == 0) {
+
+function addSongToAlbum(selectedAlbum:Album) {
+    if (selectedAlbum.getListSong().length == 0) {
         let id = input.question(`Input ID: `);
         let name = input.question(`Input name: `);
-        let writer = input.question(`Input Singer's name: `);
+        let writer = input.question(`Input artist name: `);
         let releaseDate = input.question(`Input release date:  `);
+        let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
+        let checkDate;
+        do{
+            let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+            checkDate = regex.test(releaseDate);
+            if(checkDate == false){
+                console.log(`Incorrect date format. please try again.`);
+            }
+        }while(checkDate == false);
         let song = new Song(id, name, writer, releaseDate);
-        selectedCategory.addSong(song);
-        console.log(`A new song was successfully added to category.`);
+        selectedAlbum.addSong(song);
+        console.log(`A new song was successfully added to Album.`);
     }else{
         let flag: boolean = false
         do {
             let id = input.question(`Input ID: `);
             let idAfterCheck;
-                for (let i = 0; i < selectedCategory.getListSong().length; i++) {
-                    if (id == selectedCategory.getListSong()[i].getId()) {
+                for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+                    if (id == selectedAlbum.getListSong()[i].getId()) {
                         console.log(`This ID has been in used.`);
                     } else {
                         idAfterCheck = id;
@@ -408,16 +426,25 @@ function addSongToCategory(selectedCategory:Category) {
                         do {
                             let name = input.question(`Input name: `);
                             let nameAfterCheck;
-                            for (let i = 0; i < selectedCategory.getListSong().length; i++) {
-                                if (name == selectedCategory.getListSong()[i].getName()) {
+                            for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+                                if (name == selectedAlbum.getListSong()[i].getTitle()) {
                                     console.log(`This name has been in used.`);
                                 } else {
                                     nameAfterCheck = name;
-                                    let writer = input.question(`Input singer's name: `);
-                                    let releaseDate = input.question(`Input release date:  `);
+                                    let writer = input.question(`Input artist name: `);
+                                    let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY):  `);
+                                    let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
+                                    let checkDate;
+                                    do{
+                                        let releaseDate = input.question(`Input release date: `);
+                                        checkDate = regex.test(releaseDate);
+                                        if(checkDate == false){
+                                            console.log(`Incorrect date format. please try again.`);
+                                        }
+                                    }while(checkDate == false);
                                     let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
-                                    selectedCategory.addSong(song);
-                                    console.log(`A new song was successfully added to category.`);
+                                    selectedAlbum.addSong(song);
+                                    console.log(`A new song was successfully added to Album.`);
                                     flag = true;
                                     flag2 = true;
                                     return;
@@ -430,43 +457,43 @@ function addSongToCategory(selectedCategory:Category) {
     }
 }
 
-function displaySongInformation(selectedCategory:Category){
-    console.log(`------List song in ${selectedCategory.getName()}------`);
+function displaySongInformation(selectedAlbum:Album){
+    console.log(`------List song in ${selectedAlbum.getName()}------`);
     let menu = '';
-    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
-        menu += `${i + 1}. Song ID: ${selectedCategory.getListSong()[i].getId()}
-        Song name: ${selectedCategory.getListSong()[i].getName()}
-        Singer: ${selectedCategory.getListSong()[i].getWriter()}
-        Release Date: ${selectedCategory.getListSong()[i].getReleaseDate()}\n`
+    for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+        menu += `${i + 1}. Song ID: ${selectedAlbum.getListSong()[i].getId()}
+        Title: ${selectedAlbum.getListSong()[i].getTitle()}
+        Artist Name: ${selectedAlbum.getListSong()[i].getSinger()}
+        Release Date: ${selectedAlbum.getListSong()[i].getReleaseDate()}\n`
     }
     console.log(menu);
     console.log(`0. Exit`);
     let choice = +input.question(`Select 0 to exit. `);
     if(choice == 0){
-        displaySongMenu(selectedCategory);
+        displaySongMenu(selectedAlbum);
     }
 }
-function editSongInCategory(selectedCategory:Category) {
+function editSongInAlbum(selectedAlbum:Album) {
     console.log(`-----Select a song to you want to edit-----`);
     let menu = '';
-    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
-        menu += `${i + 1}. Song ID: ${selectedCategory.getListSong()[i].getId()} Song name: ${selectedCategory.getListSong()[i].getName()}\n`
+    for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+        menu += `${i + 1}. Song ID: ${selectedAlbum.getListSong()[i].getId()} Song name: ${selectedAlbum.getListSong()[i].getTitle()}\n`
     }
     console.table(menu);
     console.log(`0. Exit`);
     let choice = +input.question(`Input your selection: `);
     if(choice == 0){
-        displaySongMenu(selectedCategory);
+        displaySongMenu(selectedAlbum);
     }else{
         let indexOfSong = choice - 1;
-        let selectedSong:Song = selectedCategory.getListSong()[indexOfSong];
+        let selectedSong:Song = selectedAlbum.getListSong()[indexOfSong];
         editSongDetail(selectedSong);
     }
 
 }
 function editSongDetail(selectedSong:Song){
     let choice;
-        console.log(`----Edit information of ${selectedSong.getName()}---
+        console.log(`----Edit information of ${selectedSong.getTitle()}---
         1. Edit song name
         2. Edit song ID
         3. Edit singer
@@ -491,7 +518,7 @@ function editSongDetail(selectedSong:Song){
 }
 function editSongName(selectedSong:Song){
     let name = input.question(`Enter new name: `);
-    selectedSong.setName(name);
+    selectedSong.setTitle(name);
     console.log(`Name has been successfully updated. `);
     console.table(selectedSong);
 }
@@ -502,8 +529,8 @@ function editSongId(selectedSong:Song){
     console.table(selectedSong);
 }
 function editSongSinger(selectedSong:Song){
-    let Singer = input.question('Input singer name: ');
-    selectedSong.setWriter(Singer);
+    let singer = input.question('Input singer name: ');
+    selectedSong.setSinger(singer);
     console.log('Singer name has been successfully updated. ');
     console.table(selectedSong);
 }
@@ -513,51 +540,51 @@ function editSongReleaseDate(selectedSong:Song){
     console.log('Release date has been successfully updated. ');
     console.table(selectedSong);
 }
-function deleteSongInCategory(selectedCategory:Category) {
+function deleteSongInAlbum(selectedAlbum:Album) {
     let menu = '';
     let choice;
     let indexOfSong;
     let selectedSong;
-    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
-        menu += `${i + 1}. Name ${selectedCategory.getListSong()[i].getName()}`
+    for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+        menu += `${i + 1}. Name ${selectedAlbum.getListSong()[i].getTitle()}`
     }
     console.log(`${menu} \n 0. Exit`);
     choice = +input.question(`Select song you want to delete: `);
     if (choice == 0) {
-        displaySongMenu(selectedCategory);
+        displaySongMenu(selectedAlbum);
     }else{
         indexOfSong = choice - 1;
-        selectedSong = selectedCategory.getListSong()[indexOfSong];
-        console.log(`Are you sure you want to delete ${selectedSong.getName()}:
+        selectedSong = selectedAlbum.getListSong()[indexOfSong];
+        console.log(`Are you sure you want to delete ${selectedSong.getTitle()}:
                                  1. Yes 
                                  2. No `);
         let choice1 = +input.question(`Input your selection: `);
         if (choice1 == 1) {
-            selectedCategory.getListSong().splice(indexOfSong, 1);
-            console.log(`Song has been deleted from category. `);
+            selectedAlbum.getListSong().splice(indexOfSong, 1);
+            console.log(`Song has been deleted from Album. `);
         } else if (choice1 == 2) {
             editSongDetail(selectedSong);
         }
     }
 }
 
-function findCategoryByName(){
-let nameCategory = input.question(`Input name of category you want to find: `);
-    for (let i = 0; i < categoryManager.getCategory().length; i++) {
-        if(categoryManager.getCategory()[i].getName() == nameCategory){
-            console.log(`1. ID: ${categoryManager.getCategory()[i].getId()}
-            2. Name: ${categoryManager.getCategory()[i].getName()}
-            3. Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            4. Number of Songs: ${categoryManager.getCategory()[i].getNumberOfSong()}
+function findAlbumByName(){
+let nameAlbum = input.question(`Input name of Album you want to find: `);
+    for (let i = 0; i < albumManager.getAlbum().length; i++) {
+        if(albumManager.getAlbum()[i].getName() == nameAlbum){
+            console.log(`1. ID: ${albumManager.getAlbum()[i].getId()}
+            2. Name: ${albumManager.getAlbum()[i].getName()}
+            3. Creator: ${albumManager.getAlbum()[i].getCreator().getUsername()}
+            4. Number of Songs: ${albumManager.getAlbum()[i].getNumberOfSong()}
             5. ListSong: 
              `);
             let listSong = '';
-            for (let j = 0; j < categoryManager.getCategory()[i].getListSong().length; j++) {
+            for (let j = 0; j < albumManager.getAlbum()[i].getListSong().length; j++) {
                 listSong += `   
-                5.${j+1}. ID: ${categoryManager.getCategory()[i].getListSong()[j].getId()}
-                Name: ${categoryManager.getCategory()[i].getListSong()[j].getName()}
-                Singer: ${categoryManager.getCategory()[i].getListSong()[j].getWriter()}
-                Release date: ${categoryManager.getCategory()[i].getListSong()[j].getReleaseDate()}\n
+                5.${j+1}. ID: ${albumManager.getAlbum()[i].getListSong()[j].getId()}
+                Title: ${albumManager.getAlbum()[i].getListSong()[j].getTitle()}
+                Artist Name: ${albumManager.getAlbum()[i].getListSong()[j].getSinger()}
+                Release date: ${albumManager.getAlbum()[i].getListSong()[j].getReleaseDate()}\n
                 `
             }
             console.log(listSong);

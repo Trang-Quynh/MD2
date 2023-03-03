@@ -1,23 +1,23 @@
 //Book Manager
 import {Song} from "./Song";
 import {Account} from "./Account";
-export class Category{
-    private id:number;
+export class Album {
+    private id:string;
     private name:string;
     private numberOfSong: number
     private creator:Account;
     private listSong:Song[] = [];
 
-    constructor(id:number,name:string,creator:Account) {
+    constructor(id:string,name:string,creator:Account) {
         this.id = id;
         this.name = name;
+        this.numberOfSong = this.listSong.length;
         this.creator = creator;
-        this.numberOfSong= this.listSong.length;
     }
     getName():string{
         return this.name
     }
-    getId():number {
+    getId():string {
         return this.id
     }
     getNumberOfSong():number{

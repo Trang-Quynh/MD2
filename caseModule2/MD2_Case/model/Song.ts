@@ -1,13 +1,13 @@
 export class Song {
     private id: string;
-    private name: string;
-    private writer: string;
+    private title: string;
+    private singer: string;
     private releaseDate: string;
 
-    constructor(id: string, name: string, writer: string, releaseDate: string) {
+    constructor(id: string, title: string, singer: string, releaseDate: string) {
         this.id = id;
-        this.name = name;
-        this.writer = writer;
+        this.title = title;
+        this.singer = singer;
         this.releaseDate = releaseDate;
     }
     getId(): string {
@@ -16,17 +16,17 @@ export class Song {
     setId(value: string) {
         this.id = value;
     }
-    getName(): string {
-        return this.name;
+    getTitle(): string {
+        return this.title;
     }
-    setName(value: string) {
-        this.name = value;
+    setTitle(value: string) {
+        this.title = value;
     }
-    getWriter(): string {
-        return this.writer;
+    getSinger(): string {
+        return this.singer;
     }
-    setWriter(value: string) {
-        this.writer = value;
+    setSinger(value: string) {
+        this.singer = value;
     }
     getReleaseDate(): string {
         return this.releaseDate;
