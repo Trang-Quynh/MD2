@@ -1,21 +1,21 @@
 import {Category} from "./model/Category";
 import {CategoryManager} from "./service/CategoryManager";
-import {AccountManage} from "./service/AccountManager";
+import {AccountManager} from "./service/AccountManager";
 import {Account} from "./model/Account";
-import {Book} from "./model/Book";
+import {Song} from "./model/Song";
 // @ts-ignore
 let input = require(`readline-sync`);
 let categoryManager = new CategoryManager();
-let accountManager = new AccountManage();
+let accountManager = new AccountManager();
 let currentAcc:Account;
 function loginMenu(){
     let choice;
     do{
-        console.log(`
+        console.log(`\n------Login/Logout/Register menu------\n
         1. Login
         2. Register
         0. Exit`);
-        choice = +input.question("\nEnter your selection: ")
+        choice = +input.question("\nEnter your selection: ");
     switch (choice) {
         case 1:
             login();
@@ -26,14 +26,14 @@ function loginMenu(){
         }
     }while(choice != 0)
 }
-// thêm điều kiện tài khoản bị khóa ở phần đăng nhập
+
 function login(){
-    console.log(`-----Login-----`);
+    console.log(`\n-----Login-----\n`);
     let checkLogin = true;
     let checkLogin1 = true;
     let inputName = input.question("Enter username: ");
     let inputId = input.question(`Enter id: `);
-    let inputPassword = input.question(`Enter password: `)
+    let inputPassword = input.question(`Enter password: `);
     for (let i = 0; i < accountManager.listAccount.length; i++) {
         let userName = accountManager.listAccount[i].getUsername();
         let id = accountManager.listAccount[i].getId();
@@ -42,18 +42,18 @@ function login(){
         if (userName == inputName && inputId == id && password == inputPassword && status == "ON") {
             checkLogin = false;
             currentAcc = new Account(id,userName,password,status);
-            console.log('Login successful');
+            console.log('\nLogin successful!\n');
             main();
-        }else if(userName == inputName && inputId == id && status == "OFF"){
+        }else if(userName == inputName && inputId == id && password == inputPassword && status == "OFF"){
             console.log(`Your account has been locked. To unlock your account, contact your administrator.`);
             checkLogin1 = false;
         }
     }
     if (checkLogin == true && checkLogin1 == true) {
-        console.log(`Account does not exist. Please try again or select register to create a new account.
+        console.log(`Account does not exist. Please try again or select register to create a new account.\n
         1. Try to login again
         2. Register
-        0. Return to main menu`);
+        0. Return to login/logout/register menu`);
         let choice = +input.question(`\nEnter your selection: `);
         if(choice == 1){
             login();
@@ -65,23 +65,23 @@ function login(){
     }
 }
 function register() {
-    let flag: boolean = false;
+    let flag:boolean = false;
     do {
         let userName = input.question('Enter your name (allow only alphabet input): ');
         let regex = /^[a-z A-Z\-]+$/;
         let test = regex.test(userName);
         for (let i = 0; i < accountManager.listAccount.length; i++) {
             if (accountManager.listAccount[i].getUsername() == userName) {
-                test = false;
+                // test = false;
                 console.log(`This name has already been used.`);
             }
         }
-        let userNameAfterCheck: string;
+        let userNameAfterCheck:string;
         if (test == false) {
-            console.log(`Name is not valid. Please try again: `)
+            console.log(`Name is not valid. Please try again: `);
         } else {
             userNameAfterCheck = userName;
-            let flag2: boolean = false;
+            let flag2:boolean = false;
             do {
                 let id = input.question(`Input an ID that begins with the letter ACC followed by three digits (like ACC234): `);
                 regex = /^ACC[0-9]{3}$/;
@@ -94,24 +94,23 @@ function register() {
                 }
                 let idAfterCheck:string;
                 if(test == false){
-                    console.log('ID is not valid. Please try again! ');
+                    console.log('ID is not valid. Please try again. ');
                 }else{
                     idAfterCheck = id;
                     let passwordAfterCheck:string;
                     let flag3:boolean = false;
                     do {
-                        let password = input.question(`Input password (password must has 8 characters, 
-              at least one capital letters and one number: `);
+                        let password = input.question(`Input password (password must has 8 characters, at least one capital letters and one number: `);
                         regex =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{9,}$/;
                         test = regex.test(password);
                         if(test == false){
-                            console.log(`Password is not valid. Please try again:`)
+                            console.log(`Password is not valid. Please try again.`);
                         }else{
                             passwordAfterCheck = password;
                             let status:string = 'ON';
                             let account = new Account(idAfterCheck,userNameAfterCheck,passwordAfterCheck,status);
                             accountManager.add(account);
-                            console.log(`\nRegistration was successful. Please login!`)
+                            console.log(`\nRegistration was successful. Please login!`);
                             currentAcc = account;
                             loginMenu();
                             flag = true;
@@ -128,15 +127,15 @@ function register() {
 function main() {
         let choice;
         do {
-            console.log(`
+            console.log(`\n------Main Menu-------\n
         1. Add new category
         2. Edit your category
         3. Delete your category
         4. Find category from category list
         5. Account manager (for admin only)
-        0. Return to login menu`
+        0. Back to previous menu`
             )
-            choice = +input.question(`\nEnter your selection: `)
+            choice = +input.question(`\nEnter your selection: `);
             switch (choice) {
                 case 1:
                     addCategory();
@@ -154,13 +153,13 @@ function main() {
                     menuAccManager();
                     break;
             }
-        } while (choice != 0)
+        } while (choice != 0);
 }
 function menuAccManager(){
     if(currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `Trang1997`){
         let choice;
         do{
-            console.log(`
+            console.log(`\n-------Account manager menu--------\n
             1. Show account list 
             2. Delete account
             3. Change account status
@@ -177,25 +176,7 @@ function menuAccManager(){
                     onOffAccount();
                     break;
             }
-        }while(choice != 0)
-        // console.log(`
-        //  1. Show account list
-        //  2. Delete account
-        //  3. Change account status
-        //  0. Return to main menu`)
-        // let choice = +input.question("\nEnter your selection: ")
-        // if(choice == 1){
-        //     showAccount();
-        //     menuAccManager();
-        // }else if(choice == 2){
-        //     deleteAccount();
-        //     menuAccManager();
-        // }else if(choice == 3){
-        //     onOffAccount();
-        //     menuAccManager();
-        // } else if(choice == 0){
-        //     main();
-        // }
+        }while(choice != 0);
     }else{
         console.log(`\nYou must be an administrator of library to perform these tasks.`);
     }
@@ -203,8 +184,8 @@ function menuAccManager(){
 
 function onOffAccount(){
     let menu = '';
-    for (let i = 0; i < accountManager.listAccount.length; i++) {
-        menu += `${i+1}. ID: ${accountManager.listAccount[i].getId()} - Name: ${accountManager.listAccount[i].getUsername()} - Status: ${accountManager.listAccount[i].getStatus()}\n`
+    for (let i = 1; i < accountManager.listAccount.length; i++) {
+        menu += `${i}. ID: ${accountManager.listAccount[i].getId()} - Name: ${accountManager.listAccount[i].getUsername()} - Status: ${accountManager.listAccount[i].getStatus()}\n`
     }
     console.table(menu);
     console.log(`Enter 0 to exit: `);
@@ -212,7 +193,7 @@ function onOffAccount(){
     if(choice == 0){
         menuAccManager();
     }else{
-        let selectedAcc = accountManager.listAccount[choice - 1];
+        let selectedAcc = accountManager.listAccount[choice];
         if(selectedAcc.getStatus() == `ON`){
             console.log(`Do you want to disable ${selectedAcc.getUsername()}: 1.Yes\t2.No`);
             let choiceYesNo1 = +input.question(`Enter your selection: `);
@@ -237,58 +218,60 @@ function onOffAccount(){
     }
 }
 
-
-
 function deleteAccount() {
-    let id = input.question(`Input account id you want to delete: `)
+    let id = input.question(`Input account id you want to delete: `);
     accountManager.deleteById(id);
 }
 function showAccount(){
-    console.table(accountManager.findAllAccount());
+    console.log(accountManager.findAllAccount());
+    main();
 }
 function addCategory(){
     let flag:boolean = false;
     do{
-        let id = input.question(`Input category ID (digits only, 5 digits like: 12345) : `)
+        let id = input.question(`Input category ID (digits only, 5 digits like: 12345) : `);
         let regex = /^[0-9]{5}$/;
         let testCategoryId = regex.test(id);
         let categoryIdAfterCheck:number;
         for (let i = 0; i < categoryManager.getCategory().length; i++) {
             if(categoryManager.getCategory()[i].getId() == id){
-                testCategoryId = false;
-                console.log(`This ID has already been in used.`);
+                // testCategoryId = false;
+                console.log(`This ID has already been in used. Input again.`);
+                addCategory();
             }
         }
         if(testCategoryId == false){
-            console.log(`ID is not valid. Please try again: `)
+            console.log(`ID is not valid. Please try again. `);
         }else{
             categoryIdAfterCheck = id;
             let flag2: boolean = false;
             do {
-                let categoryName = input.question(`Input category name, allow only alphabet input: `);
-                regex = /^[a-z A-Z\-]+$/;
+                let categoryName = input.question(`Input category name, allow alphabet, digits and hyphens: `);
+                regex = /^[0-9 a-z A-Z\-]+$/;
                 let testCategoryName = regex.test(categoryName);
                 let categoryNameAfterCheck:string;
+                let flagCheckName:boolean = false;
                 for (let i = 0; i < categoryManager.getCategory().length; i++) {
                     if (categoryManager.getCategory()[i].getName() == categoryName) {
-                        testCategoryName = false;
-                        console.log(`Category name has already been in used.`);
+                        // testCategoryName = false;
+                        flagCheckName = true;
+                        console.log(`Category name has already been in used. Input again.`);
                     }
                 }
-                    if(testCategoryName == false){
-                        console.log(`Category name has already been in used.`)
-                    }else{
+                    if(testCategoryName == false && flagCheckName !== true){
+                        console.log(`Category name is not valid. Please try again.`);
+                    }else if(testCategoryName == true && flagCheckName !== true){
                         categoryNameAfterCheck = categoryName;
                         let creator = currentAcc;
                         let category = new Category(categoryIdAfterCheck,categoryNameAfterCheck,creator);
                         categoryManager.addCategory(category);
-                        console.log(`A new category has been successfully added to library.`);
                         flag = true;
                         flag2 = true;
+                        console.log(`A new category has been successfully added to library.`);
                     }
-                } while(flag2 == false)
+                }while(flag2 == false);
         }
-    }while(flag == false)
+    }while(flag == false);
 }
 function editCategory(){
     let choice;
@@ -296,7 +279,7 @@ function editCategory(){
         console.log(`
         1. Show your category to perform tasks.
         0. Return to main menu`);
-        choice = +input.question(`Enter your selection: `)
+        choice = +input.question(`\nEnter your selection: `);
         switch (choice){
             case 1:
                 displayCategoryOfCurrenAcc();
@@ -305,20 +288,20 @@ function editCategory(){
     }while(choice != 0);
 }
 function displayCategoryOfCurrenAcc(){
-    console.log(`-------Category list of your account------`)
+    console.log(`-------Category list of your account------`);
     let menu = '';
     let count = 0;
     for (let i = 0; i < categoryManager.getCategory().length; i++) {
         if(categoryManager.getCategory()[i].getCreator() == currentAcc){
             count++;
             menu += `${count}. Category Name: ${categoryManager.getCategory()[i].getName()}
-            Category Id: ${categoryManager.getCategory()[i].getId()}
+            ID: ${categoryManager.getCategory()[i].getId()}
             Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            Number of books: ${categoryManager.getCategory()[i].getNumberOfBook()}\n`;
+            Number of Songs: ${categoryManager.getCategory()[i].getNumberOfSong()}\n`;
         }
     }
     console.log(menu);
-    console.log(`0. Exit`)
+    console.log(`0. Exit`);
     let choice = +input.question("Enter your selection: ");
     let count2 = 0;
     if(choice == 0){
@@ -329,15 +312,15 @@ function displayCategoryOfCurrenAcc(){
                 count2++;
                 if(choice == count2){
                     let selectedCategory = categoryManager.getCategory()[i];
-                    console.log(selectedCategory)
-                    displayBookMenu(selectedCategory);
+                    console.log(selectedCategory);
+                    displaySongMenu(selectedCategory);
                 }
             }
         }
     }
 }
 function deleteCategoryOfCurrentAcc(){
-    console.log(`-------Select category you want to delete------`)
+    console.log(`-------Select category you want to delete------`);
     let menu = '';
     let count = 0;
     for (let i = 0; i < categoryManager.getCategory().length; i++) {
@@ -348,7 +331,7 @@ function deleteCategoryOfCurrentAcc(){
         }
     }
     console.log(menu);
-    console.log(`0. Exit`)
+    console.log(`0. Exit`);
     let choice = +input.question("Enter your selection: ");
     let count2 = 0;
     if(choice == 0){
@@ -375,49 +358,49 @@ function deleteCategoryOfCurrentAcc(){
         }
     }
 }
-function displayBookMenu(selectedCategory:Category){
+function displaySongMenu(selectedCategory:Category){
     let choice;
     do{
-        console.log(`------Menu edit book of category ${selectedCategory.getName()}-----
-        1. Add book
-        2. Show list book
-        3. Edit book
-        4. Delete book
+        console.log(`------Menu edit Song of category ${selectedCategory.getName()}-----
+        1. Add Song
+        2. Show list Song
+        3. Edit Song
+        4. Delete Song
         0. Return to display menu
         `)
         choice = +input.question(`Enter your selection: `);
         switch (choice){
             case 1:
-                addBookToCategory(selectedCategory)
+                addSongToCategory(selectedCategory);
                 break;
             case 2:
-                displayBookInformation(selectedCategory)
+                displaySongInformation(selectedCategory);
                 break;
             case 3:
-                editBookInCategory(selectedCategory)
+                editSongInCategory(selectedCategory);
                 break;
             case 4:
-                deleteBookInCategory(selectedCategory);
+                deleteSongInCategory(selectedCategory);
                 break;
         }
-    }while(choice != 0)
+    }while(choice != 0);
 }
-function addBookToCategory(selectedCategory:Category) {
-    if (selectedCategory.getListBook().length == 0) {
+function addSongToCategory(selectedCategory:Category) {
+    if (selectedCategory.getListSong().length == 0) {
         let id = input.question(`Input ID: `);
         let name = input.question(`Input name: `);
-        let writer = input.question(`Input author's name: `);
+        let writer = input.question(`Input Singer's name: `);
         let releaseDate = input.question(`Input release date:  `);
-        let book = new Book(id, name, writer, releaseDate);
-        selectedCategory.addBook(book);
-        console.log(`A new book was successfully added to category.`)
+        let song = new Song(id, name, writer, releaseDate);
+        selectedCategory.addSong(song);
+        console.log(`A new song was successfully added to category.`);
     }else{
         let flag: boolean = false
         do {
             let id = input.question(`Input ID: `);
             let idAfterCheck;
-                for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-                    if (id == selectedCategory.getListBook()[i].getId()) {
+                for (let i = 0; i < selectedCategory.getListSong().length; i++) {
+                    if (id == selectedCategory.getListSong()[i].getId()) {
                         console.log(`This ID has been in used.`);
                     } else {
                         idAfterCheck = id;
@@ -425,16 +408,16 @@ function addBookToCategory(selectedCategory:Category) {
                         do {
                             let name = input.question(`Input name: `);
                             let nameAfterCheck;
-                            for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-                                if (name == selectedCategory.getListBook()[i].getName()) {
+                            for (let i = 0; i < selectedCategory.getListSong().length; i++) {
+                                if (name == selectedCategory.getListSong()[i].getName()) {
                                     console.log(`This name has been in used.`);
                                 } else {
                                     nameAfterCheck = name;
-                                    let writer = input.question(`Input author's name: `);
+                                    let writer = input.question(`Input singer's name: `);
                                     let releaseDate = input.question(`Input release date:  `);
-                                    let book = new Book(idAfterCheck, nameAfterCheck, writer, releaseDate);
-                                    selectedCategory.addBook(book);
-                                    console.log(`A new book was successfully added to category.`)
+                                    let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
+                                    selectedCategory.addSong(song);
+                                    console.log(`A new song was successfully added to category.`);
                                     flag = true;
                                     flag2 = true;
                                     return;
@@ -447,113 +430,113 @@ function addBookToCategory(selectedCategory:Category) {
     }
 }
 
-function displayBookInformation(selectedCategory:Category){
-    console.log(`------List book in ${selectedCategory.getName()}------`);
+function displaySongInformation(selectedCategory:Category){
+    console.log(`------List song in ${selectedCategory.getName()}------`);
     let menu = '';
-    for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-        menu += `${i + 1}. Book ID: ${selectedCategory.getListBook()[i].getId()}
-        Book name: ${selectedCategory.getListBook()[i].getName()}
-        Author: ${selectedCategory.getListBook()[i].getWriter()}
-        Release Date: ${selectedCategory.getListBook()[i].getReleaseDate()}\n`
+    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
+        menu += `${i + 1}. Song ID: ${selectedCategory.getListSong()[i].getId()}
+        Song name: ${selectedCategory.getListSong()[i].getName()}
+        Singer: ${selectedCategory.getListSong()[i].getWriter()}
+        Release Date: ${selectedCategory.getListSong()[i].getReleaseDate()}\n`
     }
     console.log(menu);
     console.log(`0. Exit`);
     let choice = +input.question(`Select 0 to exit. `);
     if(choice == 0){
-        displayBookMenu(selectedCategory);
+        displaySongMenu(selectedCategory);
     }
 }
-function editBookInCategory(selectedCategory:Category) {
-    console.log(`-----Select a book to you want to edit-----`);
+function editSongInCategory(selectedCategory:Category) {
+    console.log(`-----Select a song to you want to edit-----`);
     let menu = '';
-    for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-        menu += `${i + 1}. Book ID: ${selectedCategory.getListBook()[i].getId()} Book name: ${selectedCategory.getListBook()[i].getName()}\n`
+    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
+        menu += `${i + 1}. Song ID: ${selectedCategory.getListSong()[i].getId()} Song name: ${selectedCategory.getListSong()[i].getName()}\n`
     }
     console.table(menu);
     console.log(`0. Exit`);
     let choice = +input.question(`Input your selection: `);
     if(choice == 0){
-        displayBookMenu(selectedCategory);
+        displaySongMenu(selectedCategory);
     }else{
-        let indexOfBook = choice - 1;
-        let selectedBook:Book = selectedCategory.getListBook()[indexOfBook]
-        editBookDetail(selectedBook);
+        let indexOfSong = choice - 1;
+        let selectedSong:Song = selectedCategory.getListSong()[indexOfSong];
+        editSongDetail(selectedSong);
     }
 
 }
-function editBookDetail(selectedBook:Book){
+function editSongDetail(selectedSong:Song){
     let choice;
-        console.log(`----Edit information of ${selectedBook.getName()}---
-        1. Edit book name
-        2. Edit book ID
-        3. Edit author
+        console.log(`----Edit information of ${selectedSong.getName()}---
+        1. Edit song name
+        2. Edit song ID
+        3. Edit singer
         4. Edit release date
         0. Exit`);
         choice = input.question(`Enter your selection: `);
         if(choice == 1){
-            editBookName(selectedBook);
-            editBookDetail(selectedBook);
+            editSongName(selectedSong);
+            editSongDetail(selectedSong);
         }else if(choice == 2){
-            editBookId(selectedBook);
-            editBookDetail(selectedBook);
+            editSongId(selectedSong);
+            editSongDetail(selectedSong);
         }else if(choice == 3){
-            editBookAuthor(selectedBook);
-            editBookDetail(selectedBook);
+            editSongSinger(selectedSong);
+            editSongDetail(selectedSong);
         }else if(choice == 4){
-            editBookReleaseDate(selectedBook);
-            editBookDetail(selectedBook);
+            editSongReleaseDate(selectedSong);
+            editSongDetail(selectedSong);
         }else if(choice == 5){
-            editBookDetail(selectedBook);
+            editSongDetail(selectedSong);
         }
 }
-function editBookName(selectedBook:Book){
+function editSongName(selectedSong:Song){
     let name = input.question(`Enter new name: `);
-    selectedBook.setName(name);
-    console.log(`Name has been successfully updated. `)
-    console.table(selectedBook);
+    selectedSong.setName(name);
+    console.log(`Name has been successfully updated. `);
+    console.table(selectedSong);
 }
-function editBookId(selectedBook:Book){
+function editSongId(selectedSong:Song){
     let id = input.question('Enter new ID: ');
-    selectedBook.setId(id);
+    selectedSong.setId(id);
     console.log("ID has been successfully updated. ");
-    console.table(selectedBook);
+    console.table(selectedSong);
 }
-function editBookAuthor(selectedBook:Book){
-    let author = input.question('Input author name: ');
-    selectedBook.setWriter(author);
-    console.log('Author has been successfully updated. ');
-    console.table(selectedBook);
+function editSongSinger(selectedSong:Song){
+    let Singer = input.question('Input singer name: ');
+    selectedSong.setWriter(Singer);
+    console.log('Singer name has been successfully updated. ');
+    console.table(selectedSong);
 }
-function editBookReleaseDate(selectedBook:Book){
+function editSongReleaseDate(selectedSong:Song){
     let releaseDate = input.question('Input new release date: ');
-    selectedBook.setReleaseDate(releaseDate);
+    selectedSong.setReleaseDate(releaseDate);
     console.log('Release date has been successfully updated. ');
-    console.table(selectedBook);
+    console.table(selectedSong);
 }
-function deleteBookInCategory(selectedCategory:Category) {
+function deleteSongInCategory(selectedCategory:Category) {
     let menu = '';
     let choice;
-    let indexOfBook;
-    let selectedBook;
-    for (let i = 0; i < selectedCategory.getListBook().length; i++) {
-        menu += `${i + 1}. Name ${selectedCategory.getListBook()[i].getName()}`
+    let indexOfSong;
+    let selectedSong;
+    for (let i = 0; i < selectedCategory.getListSong().length; i++) {
+        menu += `${i + 1}. Name ${selectedCategory.getListSong()[i].getName()}`
     }
-    console.log(`${menu} \n 0. Exit`)
-    choice = +input.question(`Select book you want to delete: `);
+    console.log(`${menu} \n 0. Exit`);
+    choice = +input.question(`Select song you want to delete: `);
     if (choice == 0) {
-        displayBookMenu(selectedCategory)
+        displaySongMenu(selectedCategory);
     }else{
-        indexOfBook = choice - 1;
-        selectedBook = selectedCategory.getListBook()[indexOfBook];
-        console.log(`Are you sure you want to delete ${selectedBook.getName()}:
+        indexOfSong = choice - 1;
+        selectedSong = selectedCategory.getListSong()[indexOfSong];
+        console.log(`Are you sure you want to delete ${selectedSong.getName()}:
                                  1. Yes 
                                  2. No `);
-        let choice1 = +input.question(`Input your selection: `)
+        let choice1 = +input.question(`Input your selection: `);
         if (choice1 == 1) {
-            selectedCategory.getListBook().splice(indexOfBook, 1);
-            console.log(`Book has been deleted from category. `)
+            selectedCategory.getListSong().splice(indexOfSong, 1);
+            console.log(`Song has been deleted from category. `);
         } else if (choice1 == 2) {
-            editBookDetail(selectedBook);
+            editSongDetail(selectedSong);
         }
     }
 }
@@ -565,22 +548,20 @@ let nameCategory = input.question(`Input name of category you want to find: `);
             console.log(`1. ID: ${categoryManager.getCategory()[i].getId()}
             2. Name: ${categoryManager.getCategory()[i].getName()}
             3. Creator: ${categoryManager.getCategory()[i].getCreator().getUsername()}
-            4. Number of books: ${categoryManager.getCategory()[i].getNumberOfBook()}
-            5. ListBook: 
+            4. Number of Songs: ${categoryManager.getCategory()[i].getNumberOfSong()}
+            5. ListSong: 
              `);
-            let listBook = '';
-            for (let j = 0; j < categoryManager.getCategory()[i].getListBook().length; j++) {
-                listBook += `   5.${j+1}. ID: ${categoryManager.getCategory()[i].getListBook()[j].getId()}
-                Name: ${categoryManager.getCategory()[i].getListBook()[j].getName()}
-                Author: ${categoryManager.getCategory()[i].getListBook()[j].getWriter()}
-                Release date: ${categoryManager.getCategory()[i].getListBook()[j].getReleaseDate()}\n
+            let listSong = '';
+            for (let j = 0; j < categoryManager.getCategory()[i].getListSong().length; j++) {
+                listSong += `   
+                5.${j+1}. ID: ${categoryManager.getCategory()[i].getListSong()[j].getId()}
+                Name: ${categoryManager.getCategory()[i].getListSong()[j].getName()}
+                Singer: ${categoryManager.getCategory()[i].getListSong()[j].getWriter()}
+                Release date: ${categoryManager.getCategory()[i].getListSong()[j].getReleaseDate()}\n
                 `
             }
-            console.log(listBook);
+            console.log(listSong);
         }
     }
 }
 loginMenu();
-
-
-

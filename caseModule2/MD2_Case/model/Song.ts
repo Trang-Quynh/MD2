@@ -1,4 +1,4 @@
-export class Book {
+export class Song {
     private id: string;
     private name: string;
     private writer: string;

@@ -1,18 +1,18 @@
 //Book Manager
-import {Book} from "./Book";
+import {Song} from "./Song";
 import {Account} from "./Account";
 export class Category{
     private id:number;
     private name:string;
-    private numberOfBook: number
+    private numberOfSong: number
     private creator:Account;
-    private listBook:Book[] = [];
+    private listSong:Song[] = [];
 
     constructor(id:number,name:string,creator:Account) {
         this.id = id;
         this.name = name;
         this.creator = creator;
-        this.numberOfBook = this.listBook.length;
+        this.numberOfSong= this.listSong.length;
     }
     getName():string{
         return this.name
@@ -20,14 +20,14 @@ export class Category{
     getId():number {
         return this.id
     }
-    getNumberOfBook():number{
-        return this.getListBook().length;
+    getNumberOfSong():number{
+        return this.getListSong().length;
     }
-    addBook(book:Book){
-        this.listBook.push(book);
+    addSong(song:Song){
+        this.listSong.push(song);
     }
-    getListBook():Book[] {
-        return this.listBook;
+    getListSong():Song[] {
+        return this.listSong;
     }
     getCreator():Account{
         return this.creator;

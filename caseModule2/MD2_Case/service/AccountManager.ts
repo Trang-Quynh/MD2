@@ -1,5 +1,5 @@
 import {Account} from "../model/Account";
-export class AccountManage{
+export class AccountManager{
     listAccount:Account[] = [];
 
     constructor() {
@@ -15,13 +15,14 @@ export class AccountManage{
         let flag = false;
         for (let i = 0; i < this.listAccount.length ; i++) {
             if(this.listAccount[i].getId() == id){
+                let accountName = this.listAccount[i].getUsername();
                 this.listAccount.splice(i,1)
-                console.log(`xoa thanh cong`);
+                console.log(`\n${accountName} has been successfully deleted. `);
                 flag = true;
             }
         }
         if(flag == false){
-            console.log(`acc not found`)
+            console.log(`Couldn't find account!`)
         }
     }
     findByName(name: string) {
@@ -30,7 +31,7 @@ export class AccountManage{
                 return this.listAccount[i]
             }
         }
-        return `Acc not found!`
+        return `Couldn't find your Account!`
     }
 
     findAll() {
@@ -39,8 +40,8 @@ export class AccountManage{
 
     findAllAccount() {
         let strAccount = ``
-        for (let i = 0; i < this.listAccount.length; i++) {
-            strAccount += `${i + 1}. ID: ${this.listAccount[i].getId()} - UserName: ${this.listAccount[i].getUsername()} - Password: ${this.listAccount[i].getPassword()} - Status: ${this.listAccount[i].getStatus()}\n`
+        for (let i = 1; i < this.listAccount.length; i++) {
+            strAccount += `${i}. ID: ${this.listAccount[i].getId()} - UserName: ${this.listAccount[i].getUsername()} - Password: ${this.listAccount[i].getPassword()} - Status: ${this.listAccount[i].getStatus()}\n`
         }
         return strAccount;
     }
