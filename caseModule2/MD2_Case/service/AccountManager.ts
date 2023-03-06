@@ -3,11 +3,11 @@ export class AccountManager{
     listAccount:Account[] = [];
 
     constructor() {
-        let accAdmin = new Account('Trang1997','Quynh Trang', 'trang1997', 'ON');
+        let accAdmin = new Account('000001','Quynh Trang', 'trang1997', 'ON');
         this.listAccount.push(accAdmin);
-        let account1 = new Account('ACC001', 'Nguyen Van A', 'passw1997','ON');
-        let account2 = new Account('ACC002', 'Nguyen Van B', 'passw1997','ON');
-        let account3 = new Account('ACC003', 'Nguyen Van C', 'passw1997','ON');
+        let account1 = new Account('000002', 'Nguyen Van A', 'passw1997','ON');
+        let account2 = new Account('000003', 'Nguyen Van B', 'passw1997','ON');
+        let account3 = new Account('000004', 'Nguyen Van C', 'passw1997','ON');
         this.listAccount.push(account1);
         this.listAccount.push(account2);
         this.listAccount.push(account3);
