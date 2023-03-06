@@ -173,7 +173,7 @@ function showAllAlbum() {
 }
 
 function menuAccManager() {
-    if (currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `000001`) {
+    if (currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `ACC001`) {
         let choice;
         do {
             console.log(`\n-------Account manager menu--------\n
@@ -192,6 +192,8 @@ function menuAccManager() {
                 case 3:
                     onOffAccount();
                     break;
+                case 0:
+                    main();
             }
         } while (choice != 0);
     } else {
@@ -236,8 +238,33 @@ function onOffAccount() {
 }
 
 function deleteAccount() {
-    let id = input.question(`Input account id you want to delete: `);
-    accountManager.deleteById(id);
+    let choice;
+    do {
+        console.log(`
+        1. Delete by ID
+        2. Forgot ID
+        0. Back to previous menu
+        `)
+        choice = +input.question(`Enter your selection: `);
+        if(choice == 1){
+            let id = input.question(`Input account id you want to delete: `);
+            accountManager.deleteById(id);
+        }else if(choice == 2) {
+            let menu = '';
+            for (let i = 1; i < accountManager.listAccount.length; i++) {
+                menu += `${i}. ID: ${accountManager.listAccount[i].getId()} - Name: ${accountManager.listAccount[i].getUsername()} - Status: ${accountManager.listAccount[i].getStatus()}\n`
+            }
+            console.table(menu);
+            console.log(`Enter 0 to exit: `);
+            let choice1 = +input.question(`\nSelect the account you want to delete: `);
+            if (choice1 == 0) {
+                menuAccManager();
+            } else {
+                let id = accountManager.listAccount[choice1].getId();
+                accountManager.deleteById(id);
+            }
+        }
+    }while(choice != 0)
 }
 
 function showAccount() {
