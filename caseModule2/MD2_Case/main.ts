@@ -133,38 +133,130 @@ function main() {
     let choice;
     do {
         console.log(`\n------Main Menu-------\n
-        1. Add new Album
-        2. Edit your Album
-        3. Delete your Album
-        4. Find Album from Album list
-        5. Show all Album
-        6. Account manager (for admin only)
+        1. Edit account
+        2. Add new Album
+        3. Edit Album
+        4. Delete Album
+        5. Find Album
+        6. Show all Album
+        7. Account manager (for admin only)
         0. Back to previous menu`
         )
         choice = +input.question(`\nEnter your selection: `);
         switch (choice) {
             case 1:
+                editAccountMenu();
+                break
+            case 2:
                 addAlbum();
                 break;
-            case 2:
+            case 3:
                 editAlbum();
                 break;
-            case 3:
+            case 4:
                 deleteAlbumOfCurrentAcc();
                 break;
-            case 4:
+            case 5:
                 findAlbumByName();
                 break;
-            case 5:
+            case 6:
                 showAllAlbum();
                 break;
-            case 6:
+            case 7:
                 menuAccManager();
                 break;
             case 0:
                 loginMenu();
         }
     } while (choice != 0);
+}
+function editAccountMenu(){
+    let choice;
+    do {
+        console.log(`
+        1. Edit Name
+        2. Edit ID
+        0. Exit\n`)
+        choice = +input.question(`Enter your selection: `);
+        switch (choice){
+            case 1:
+                editAccountName();
+                break;
+            case 2:
+                editAccountId();
+                break;
+            case 0:
+                main();
+        }
+    }while(choice != 0)
+}
+function editAccountName() {
+    let name = input.question(`Input new name: `)
+    let oldName = currentAcc.getUsername();
+    let regex = /^[a-z A-Z\-]+$/;
+    let test = regex.test(name);
+    let flagCheckName = false;
+    if (name == oldName) {
+        console.log(`Enter another name.`);
+        editAccountName();
+    }
+        for (let i = 0; i < accountManager.listAccount.length; i++) {
+            if (name == accountManager.listAccount[i].getUsername()) {
+                console.log(`This name has already been in used. Input again.`);
+                editAccountName();
+                flagCheckName = true;
+            }
+        }
+        if (test == true && flagCheckName == false) {
+            let index:number = -1;
+            for (let i = 0; i < accountManager.listAccount.length; i++) {
+                if(accountManager.listAccount[i].getUsername() == currentAcc.getUsername()){
+                    index = i;
+                }
+            }
+            accountManager.listAccount[index].setUsername(name);
+            currentAcc.setUsername(name);
+            console.log('Username has been successfully updated.');
+            console.log(currentAcc);
+            editAccountMenu();
+        } else if (!test) {
+            console.log('Name is invalid. Input again.')
+            editAccountName();
+        }
+}
+function editAccountId(){
+    let id = input.question(`Input new Id: `)
+    let oldId = currentAcc.getId();
+    let regex = /^ACC[0-9]{3}$/;
+    let test = regex.test(id);
+    let flagCheckId = false;
+    if (id == oldId) {
+        console.log(`Enter another id.`);
+        editAccountId();
+    }
+    for (let i = 0; i < accountManager.listAccount.length; i++) {
+        if (id == accountManager.listAccount[i].getId()) {
+            console.log(`This id has already been in used. Input again.`);
+            editAccountId();
+            flagCheckId = true;
+        }
+    }
+    if (test == true && flagCheckId == false) {
+        let index:number = -1;
+        for (let i = 0; i < accountManager.listAccount.length; i++) {
+            if(accountManager.listAccount[i].getId() == currentAcc.getId()){
+                index = i;
+            }
+        }
+        accountManager.listAccount[index].setId(id);
+        currentAcc.setId(id);
+        console.log('Id has been successfully updated.');
+        console.log(currentAcc);
+        editAccountMenu();
+    } else if (!test) {
+        console.log('Id is invalid. Input again.')
+        editAccountId();
+    }
 }
 
 function showAllAlbum() {
@@ -310,8 +402,7 @@ function addAlbum() {
                     flag2 = true;
                 } else if (testAlbumName && !flagCheckName) {
                     AlbumNameAfterCheck = AlbumName;
-                    let creator = currentAcc;
-                    let album = new Album(AlbumIdAfterCheck, AlbumNameAfterCheck, creator);
+                    let album = new Album(AlbumIdAfterCheck, AlbumNameAfterCheck, currentAcc);
                     albumManager.addAlbum(album);
                     console.log(`A new Album has been successfully added to library.`);
                     flag = true;

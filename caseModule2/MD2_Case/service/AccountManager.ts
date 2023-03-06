@@ -12,6 +12,9 @@ export class AccountManager{
         this.listAccount.push(account2);
         this.listAccount.push(account3);
     }
+    setName(account:Account,name:string){
+
+    }
 
 
     add(account: Account) {
