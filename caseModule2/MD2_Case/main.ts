@@ -197,7 +197,7 @@ function editAccountName() {
     let test = regex.test(name);
     let flagCheckName = false;
     if (name == oldName) {
-        console.log(`Enter another name.`);
+        console.log(`Input a new name that is not the same as the old one.`);
         editAccountName();
     }
         for (let i = 0; i < accountManager.listAccount.length; i++) {
@@ -231,7 +231,7 @@ function editAccountId(){
     let test = regex.test(id);
     let flagCheckId = false;
     if (id == oldId) {
-        console.log(`Enter another id.`);
+        console.log(`Input a new id that is not the same as the old one.`);
         editAccountId();
     }
     for (let i = 0; i < accountManager.listAccount.length; i++) {
@@ -260,6 +260,7 @@ function editAccountId(){
 }
 
 function showAllAlbum() {
+    console.log(`-----List album-----`)
     albumManager.showAll()
     main();
 }
@@ -288,9 +289,9 @@ function menuAccManager() {
                     main();
             }
         } while (choice != 0);
-    } else {
-        console.log(`\nYou must be an administrator of library to perform these tasks.`);
-    }
+    }else{
+        console.log(`\nYou must be an administrator of library to perform these tasks.`)
+    };
 }
 
 function onOffAccount() {
@@ -368,19 +369,19 @@ function addAlbum() {
     let flag: boolean = false;
     let flag2: boolean = false;
     do {
-        let id = input.question(`Input an ID that begins with AB followed by three digits (like 001): `);
+        let id = input.question(`Input an album code that begins with AB followed by three digits (like AB001): `);
         let regex = /^AB[0-9]{3}$/;
         let testAlbumId = regex.test(id);
         let AlbumIdAfterCheck: string;
         for (let i = 0; i < albumManager.getAlbum().length; i++) {
             if (albumManager.getAlbum()[i].getId() == id) {
                 // testAlbumId = false;
-                console.log(`This ID has already been in used. Input again.`);
+                console.log(`This album code has already been in used. Input again.`);
                 addAlbum();
             }
         }
         if (testAlbumId == false) {
-            console.log(`ID is not valid. Please try again. `);
+            console.log(`code is not valid. Please try again. `);
         } else {
             AlbumIdAfterCheck = id;
             do {
@@ -535,20 +536,22 @@ function addSongToAlbum(selectedAlbum: Album) {
         let id = input.question(`Input ID: `);
         let name = input.question(`Input name: `);
         let writer = input.question(`Input artist name: `);
-        let releaseDate = input.question(`Input release date:  `);
         let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
-        let checkDate;
-        do {
-            let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
-            checkDate = regex.test(releaseDate);
-            if (checkDate == false) {
-                console.log(`Incorrect date format. please try again.`);
-            }
-        } while (checkDate == false);
-        let song = new Song(id, name, writer, releaseDate);
-        selectedAlbum.addSong(song);
-        console.log(`A new song was successfully added to Album.`);
-    } else {
+        let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+        let checkDate = regex.test(releaseDate);
+        console.log(currentAcc);
+        if (checkDate == false) {
+            console.log(`Incorrect date format. please try again.`);
+            do {
+                releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+                checkDate = regex.test(releaseDate);
+            } while (checkDate == false);
+        }else{
+            let song = new Song(id, name, writer, releaseDate);
+            selectedAlbum.addSong(song);
+            console.log(`A new song was successfully added to Album.\n`);
+        }
+    }else{
         let flag: boolean = false
         do {
             let id = input.question(`Input ID: `);
@@ -570,17 +573,18 @@ function addSongToAlbum(selectedAlbum: Album) {
                                 let writer = input.question(`Input artist name: `);
                                 let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY):  `);
                                 let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
-                                let checkDate;
-                                do {
-                                    let releaseDate = input.question(`Input release date: `);
-                                    checkDate = regex.test(releaseDate);
-                                    if (checkDate == false) {
-                                        console.log(`Incorrect date format. please try again.`);
-                                    }
-                                } while (checkDate == false);
-                                let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
-                                selectedAlbum.addSong(song);
-                                console.log(`A new song was successfully added to Album.`);
+                                let checkDate = regex.test(releaseDate);
+                                if(checkDate == false){
+                                    console.log(`Incorrect date format. please try again.`);
+                                    do {
+                                        releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+                                        checkDate = regex.test(releaseDate);
+                                    } while (checkDate == false);
+                                }else{
+                                    let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
+                                    selectedAlbum.addSong(song);
+                                    console.log(`A new song was successfully added to Album.`);
+                                }
                                 flag = true;
                                 flag2 = true;
                                 return;
