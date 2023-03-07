@@ -369,7 +369,6 @@ function showAccount() {
 
 function addAlbum() {
     let flag: boolean = false;
-    let flag2: boolean = false;
     do {
         let id = input.question(`Input an album code that begins with AB followed by three digits (like AB001): `);
         let regex = /^AB[0-9]{3}$/;
@@ -385,6 +384,7 @@ function addAlbum() {
         if (testAlbumId == false) {
             console.log(`code is not valid. Please try again. `);
         } else {
+            let flag2: boolean = false;
             AlbumIdAfterCheck = id;
             do {
                 let AlbumName = input.question(`Input Album name, allow alphabet, digits and hyphens: `);
@@ -393,17 +393,16 @@ function addAlbum() {
                 let AlbumNameAfterCheck: string;
                 let flagCheckName: boolean = false;
                 for (let i = 0; i < albumManager.getAlbum().length; i++) {
-                    if (albumManager.getAlbum()[i].getName() == AlbumName) {
+                    if (albumManager.getAlbum()[i].getName() == AlbumName && testAlbumName == true) {
                         flagCheckName = true;
+                        console.log(`Album name has already been in used. Input again.`);
+                        flag2 = true;
                     }
                 }
-                if (!testAlbumName) {
+                if (flagCheckName == false && testAlbumName == false) {
                     console.log(`Album name is not valid. Please try again.`);
                     flag2 = true;
-                } else if (flagCheckName) {
-                    console.log(`Album name has already been in used. Input again.`);
-                    flag2 = true;
-                } else if (testAlbumName && !flagCheckName) {
+                }else if (flagCheckName == false && testAlbumName == true) {
                     AlbumNameAfterCheck = AlbumName;
                     let album = new Album(AlbumIdAfterCheck, AlbumNameAfterCheck, currentAcc);
                     albumManager.addAlbum(album);
@@ -412,9 +411,9 @@ function addAlbum() {
                     flag2 = false;
                     main();
                 }
-            } while (flag2)
+            } while (flag2 == true)
         }
-    } while (!flag);
+    } while (flag == false);
 }
 
 function editAlbum() {
@@ -534,10 +533,18 @@ function displaySongMenu(selectedAlbum: Album) {
 }
 
 function addSongToAlbum(selectedAlbum: Album) {
+    let id, name;
+    let writer;
     if (selectedAlbum.getListSong().length == 0) {
-        let id = input.question(`Input ID: `);
-        let name = input.question(`Input name: `);
-        let writer = input.question(`Input artist name: `);
+        do{
+            id = input.question(`Input ID: `);
+        }while(id == '');
+        do{
+            name = input.question(`Input name: `);
+        }while(name == '')
+        do{
+            writer = input.question(`Input artist name: `);
+        }while(writer == '')
         let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
         let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
         let checkDate = regex.test(releaseDate);
@@ -554,22 +561,23 @@ function addSongToAlbum(selectedAlbum: Album) {
     }else{
         let flag: boolean = false
         do {
-            let id: string = input.question(`Input ID: `);
-            let idAfterCheck;
+            do{
+                id = input.question(`Input ID: `);
+            }while(id == '');
             let check: boolean = true;
             for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
                 if (id === selectedAlbum.getListSong()[i].getId()) {
                     check = false;
-                    console.log(`This ID has been in used.`);
+                    console.log(`This ID da ton tai.`);
                     break;
                 }
             }
             if (check){
-                    idAfterCheck = id;
                     let flag2: boolean = false;
                     do {
-                        let name = input.question(`Input name: `);
-                        let nameAfterCheck;
+                        do{
+                            name = input.question(`Input name: `);
+                        }while(name == '');
                         let checkName: boolean = true;
                         for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
                             if (name == selectedAlbum.getListSong()[i].getTitle()) {
@@ -578,8 +586,9 @@ function addSongToAlbum(selectedAlbum: Album) {
                             }
                         }
                         if (checkName == true) {
-                            nameAfterCheck = name;
-                            let writer = input.question(`Input artist name: `);
+                            do{
+                                writer = input.question(`Input artist name: `);
+                            }while(writer == '')
                             let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY):  `);
                             let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
                             let checkDate = regex.test(releaseDate);
@@ -590,7 +599,7 @@ function addSongToAlbum(selectedAlbum: Album) {
                                     checkDate = regex.test(releaseDate);
                                 } while (checkDate == false);
                             }
-                            let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
+                            let song = new Song(id, name, writer, releaseDate);
                             selectedAlbum.addSong(song);
                             console.log(`A new song was successfully added to Album.`);
                             flag = true;
@@ -598,7 +607,7 @@ function addSongToAlbum(selectedAlbum: Album) {
                             return;
                         }
                     } while (flag2 == false)
-                } else continue;
+                }
         } while (flag == false)
     }
 }
@@ -649,7 +658,7 @@ function editSongDetail(selectedSong: Song,selectedAlbum:Album) {
         0. Exit`);
     choice = input.question(`Enter your selection: `);
     if (choice == 1) {
-        editSongName(selectedSong);
+        editSongName(selectedSong,selectedAlbum);
         editSongDetail(selectedSong,selectedAlbum);
     } else if (choice == 2) {
         editSongId(selectedSong,selectedAlbum);
@@ -665,38 +674,77 @@ function editSongDetail(selectedSong: Song,selectedAlbum:Album) {
     }
 }
 
-function editSongName(selectedSong: Song) {
-    let oldName = selectedSong.getTitle();
-    let name = input.question(`Enter new name: `);
-    if (name == oldName) {
-        do {
-            name = input.question(`Input another name: `);
-        } while (name == oldName)
-    }
-    selectedSong.setTitle(name);
-    console.log(`Name has been successfully updated. `);
-    console.table(selectedSong);
+function editSongName(selectedSong:Song,selectedAlbum:Album) {
+    let flagCheck:boolean = false;
+    let oldTitle = selectedSong.getTitle();
+    do {
+        let title = input.question('Enter new title: ');
+        if(title == ''){
+            console.log(`Title cannot be left blank.`);
+            flagCheck = true;
+        }
+        if (title == oldTitle) {
+            console.log(`Input a title that is different from the previous one.`);
+            flagCheck = true;
+        }
+        if(title != oldTitle && title != ''){
+            let flag2:boolean = false;
+            for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+                if (title == selectedAlbum.getListSong()[i].getTitle()) {
+                    console.log(`This title already exists.`);
+                    flagCheck = true;
+                    flag2 = true;
+                }
+            }
+            if(flag2 == false){
+                selectedSong.setTitle(title);
+                console.log(`Title has been successfully updated. `);
+                console.table(selectedSong);
+                flagCheck = false;
+            }
+        }
+    }while(flagCheck == true);
 }
 
 function editSongId(selectedSong:Song,selectedAlbum:Album) {
-    let id = input.question('Enter new ID: ');
+    let flagCheck:boolean = false;
     let oldId = selectedSong.getId();
-    for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
-        if (id == selectedAlbum.getListSong()[i].getId() && id != oldId) {
-            console.log(`This ID has been in used.`);
-            editSongId(selectedSong,selectedAlbum);
-        }
-    }
     do {
-        id = input.question('Enter new ID: ');
-    }while(id == null || id == oldId)
-    selectedSong.setId(id);
-    console.log("ID has been successfully updated. ");
-    console.table(selectedSong);
+        let id = input.question('Enter new ID: ');
+        console.log(id);
+        console.log(typeof(id))
+        if(id == ''){
+            console.log(`ID cannot be left blank.`);
+            flagCheck = true;
+        }
+        if (id == oldId) {
+            console.log(`Input an ID that is different from the previous one.`);
+            flagCheck = true;
+        }
+        if(id != oldId && id != ''){
+            let flag2:boolean = false;
+            for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+                if (id == selectedAlbum.getListSong()[i].getId()) {
+                    console.log(`This id already exists.`);
+                    flagCheck = true;
+                    flag2 = true;
+                }
+            }
+            if(flag2 == false){
+                selectedSong.setId(id);
+                console.log(`Id has been successfully updated. `);
+                console.table(selectedSong);
+                flagCheck = false;
+            }
+        }
+    }while(flagCheck == true);
 }
 
 function editSongSinger(selectedSong: Song) {
-    let singer = input.question('Input singer name: ');
+    let singer;
+    do {
+        singer = input.question('Input singer name: ');
+    }while(singer == '')
     selectedSong.setSinger(singer);
     console.log('Singer name has been successfully updated. ');
     console.table(selectedSong);
