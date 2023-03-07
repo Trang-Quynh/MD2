@@ -287,11 +287,13 @@ function menuAccManager() {
                     break;
                 case 0:
                     main();
+                    break;
             }
         } while (choice != 0);
     }else{
-        console.log(`\nYou must be an administrator of library to perform these tasks.`)
-    };
+        console.log(`\nYou must be an administrator of library to perform these tasks.`);
+        loginMenu();
+    }
 }
 
 function onOffAccount() {
@@ -506,7 +508,7 @@ function deleteAlbumOfCurrentAcc() {
 function displaySongMenu(selectedAlbum: Album) {
     let choice;
     do {
-        console.log(`------Menu edit Song of Album ${selectedAlbum.getName()}-----
+        console.log(`\n------Menu edit Song of Album ${selectedAlbum.getName()}-----
         1. Add Song
         2. Show list Song
         3. Edit Song
@@ -539,60 +541,64 @@ function addSongToAlbum(selectedAlbum: Album) {
         let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
         let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
         let checkDate = regex.test(releaseDate);
-        console.log(currentAcc);
         if (checkDate == false) {
-            console.log(`Incorrect date format. please try again.`);
             do {
+                console.log(`Incorrect date format. please try again.`);
                 releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
                 checkDate = regex.test(releaseDate);
             } while (checkDate == false);
-        }else{
-            let song = new Song(id, name, writer, releaseDate);
-            selectedAlbum.addSong(song);
-            console.log(`A new song was successfully added to Album.\n`);
         }
+        let song = new Song(id, name, writer, releaseDate);
+        selectedAlbum.addSong(song);
+        console.log(`A new song was successfully added to Album.\n`);
     }else{
         let flag: boolean = false
         do {
-            let id = input.question(`Input ID: `);
+            let id: string = input.question(`Input ID: `);
             let idAfterCheck;
+            let check: boolean = true;
             for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
-                if (id == selectedAlbum.getListSong()[i].getId()) {
+                if (id === selectedAlbum.getListSong()[i].getId()) {
+                    check = false;
                     console.log(`This ID has been in used.`);
-                } else {
+                    break;
+                }
+            }
+            if (check){
                     idAfterCheck = id;
                     let flag2: boolean = false;
                     do {
                         let name = input.question(`Input name: `);
                         let nameAfterCheck;
+                        let checkName: boolean = true;
                         for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
                             if (name == selectedAlbum.getListSong()[i].getTitle()) {
                                 console.log(`This name has been in used.`);
-                            } else {
-                                nameAfterCheck = name;
-                                let writer = input.question(`Input artist name: `);
-                                let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY):  `);
-                                let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
-                                let checkDate = regex.test(releaseDate);
-                                if(checkDate == false){
-                                    console.log(`Incorrect date format. please try again.`);
-                                    do {
-                                        releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
-                                        checkDate = regex.test(releaseDate);
-                                    } while (checkDate == false);
-                                }else{
-                                    let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
-                                    selectedAlbum.addSong(song);
-                                    console.log(`A new song was successfully added to Album.`);
-                                }
-                                flag = true;
-                                flag2 = true;
-                                return;
+                                checkName = false;
                             }
                         }
+                        if (checkName == true) {
+                            nameAfterCheck = name;
+                            let writer = input.question(`Input artist name: `);
+                            let releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY):  `);
+                            let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
+                            let checkDate = regex.test(releaseDate);
+                            if (checkDate == false) {
+                                do {
+                                    console.log(`Incorrect date format. please try again.`);
+                                    releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+                                    checkDate = regex.test(releaseDate);
+                                } while (checkDate == false);
+                            }
+                            let song = new Song(idAfterCheck, nameAfterCheck, writer, releaseDate);
+                            selectedAlbum.addSong(song);
+                            console.log(`A new song was successfully added to Album.`);
+                            flag = true;
+                            flag2 = true;
+                            return;
+                        }
                     } while (flag2 == false)
-                }
-            }
+                } else continue;
         } while (flag == false)
     }
 }
@@ -628,12 +634,12 @@ function editSongInAlbum(selectedAlbum: Album) {
     } else {
         let indexOfSong = choice - 1;
         let selectedSong: Song = selectedAlbum.getListSong()[indexOfSong];
-        editSongDetail(selectedSong);
+        editSongDetail(selectedSong,selectedAlbum);
     }
 
 }
 
-function editSongDetail(selectedSong: Song) {
+function editSongDetail(selectedSong: Song,selectedAlbum:Album) {
     let choice;
     console.log(`----Edit information of ${selectedSong.getTitle()}---
         1. Edit song name
@@ -644,18 +650,18 @@ function editSongDetail(selectedSong: Song) {
     choice = input.question(`Enter your selection: `);
     if (choice == 1) {
         editSongName(selectedSong);
-        editSongDetail(selectedSong);
+        editSongDetail(selectedSong,selectedAlbum);
     } else if (choice == 2) {
-        editSongId(selectedSong);
-        editSongDetail(selectedSong);
+        editSongId(selectedSong,selectedAlbum);
+        editSongDetail(selectedSong,selectedAlbum);
     } else if (choice == 3) {
         editSongSinger(selectedSong);
-        editSongDetail(selectedSong);
+        editSongDetail(selectedSong,selectedAlbum);
     } else if (choice == 4) {
         editSongReleaseDate(selectedSong);
-        editSongDetail(selectedSong);
+        editSongDetail(selectedSong,selectedAlbum);
     } else if (choice == 5) {
-        editSongDetail(selectedSong);
+        editSongDetail(selectedSong,selectedAlbum);
     }
 }
 
@@ -672,8 +678,18 @@ function editSongName(selectedSong: Song) {
     console.table(selectedSong);
 }
 
-function editSongId(selectedSong: Song) {
+function editSongId(selectedSong:Song,selectedAlbum:Album) {
     let id = input.question('Enter new ID: ');
+    let oldId = selectedSong.getId();
+    for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
+        if (id == selectedAlbum.getListSong()[i].getId() && id != oldId) {
+            console.log(`This ID has been in used.`);
+            editSongId(selectedSong,selectedAlbum);
+        }
+    }
+    do {
+        id = input.question('Enter new ID: ');
+    }while(id == null || id == oldId)
     selectedSong.setId(id);
     console.log("ID has been successfully updated. ");
     console.table(selectedSong);
@@ -688,10 +704,21 @@ function editSongSinger(selectedSong: Song) {
 
 function editSongReleaseDate(selectedSong: Song) {
     let releaseDate = input.question('Input new release date: ');
-    selectedSong.setReleaseDate(releaseDate);
-    console.log('Release date has been successfully updated. ');
-    console.table(selectedSong);
+    let regex = /^(0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2}$/;
+    let checkDate = regex.test(releaseDate);
+    if (checkDate == false) {
+        do {
+            console.log(`Incorrect date format. Please try again.`);
+            releaseDate = input.question(`Input release date (MM/DD/YYYY)/(MM-DD-YYYY)/(MM.DD.YYYY)/(MM DD YYYY): `);
+            checkDate = regex.test(releaseDate);
+        } while (checkDate == false);
+    } else {
+        selectedSong.setReleaseDate(releaseDate);
+        console.log('Release date has been successfully updated. ');
+        console.table(selectedSong);
+    }
 }
+
 
 function deleteSongInAlbum(selectedAlbum: Album) {
     let menu = '';
@@ -716,7 +743,7 @@ function deleteSongInAlbum(selectedAlbum: Album) {
             selectedAlbum.getListSong().splice(indexOfSong, 1);
             console.log(`Song has been deleted from Album. `);
         } else if (choice1 == 2) {
-            editSongDetail(selectedSong);
+            editSongDetail(selectedSong,selectedAlbum);
         }
     }
 }
