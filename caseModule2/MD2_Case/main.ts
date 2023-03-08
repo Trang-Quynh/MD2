@@ -260,13 +260,12 @@ function editAccountId(){
 }
 
 function showAllAlbum() {
-    console.log(`-----List album-----`)
     albumManager.showAll()
     main();
 }
 
 function menuAccManager() {
-    if (currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `ACC001`) {
+    if (currentAcc.getUsername() == `Quynh Trang` && currentAcc.getId() == `ACC000`) {
         let choice;
         do {
             console.log(`\n-------Account manager menu--------\n
@@ -568,7 +567,7 @@ function addSongToAlbum(selectedAlbum: Album) {
             for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
                 if (id === selectedAlbum.getListSong()[i].getId()) {
                     check = false;
-                    console.log(`This ID da ton tai.`);
+                    console.log(`This ID already exits.`);
                     break;
                 }
             }
@@ -581,7 +580,7 @@ function addSongToAlbum(selectedAlbum: Album) {
                         let checkName: boolean = true;
                         for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
                             if (name == selectedAlbum.getListSong()[i].getTitle()) {
-                                console.log(`This name has been in used.`);
+                                console.log(`This title already exits.`);
                                 checkName = false;
                             }
                         }
@@ -774,7 +773,7 @@ function deleteSongInAlbum(selectedAlbum: Album) {
     let indexOfSong;
     let selectedSong;
     for (let i = 0; i < selectedAlbum.getListSong().length; i++) {
-        menu += `${i + 1}. Name ${selectedAlbum.getListSong()[i].getTitle()}`
+        menu += `${i + 1}. Name ${selectedAlbum.getListSong()[i].getTitle()}\n`
     }
     console.log(`${menu} \n 0. Exit`);
     choice = +input.question(`Select song you want to delete: `);
@@ -797,9 +796,14 @@ function deleteSongInAlbum(selectedAlbum: Album) {
 }
 
 function findAlbumByName() {
-    let nameAlbum = input.question(`Input name of Album you want to find: `);
+    let nameAlbum;
+    let flagCheck:boolean = false;
+    do{
+        nameAlbum = input.question(`Input name of Album you want to find: `);
+    }while(nameAlbum == '')
     for (let i = 0; i < albumManager.getAlbum().length; i++) {
         if (albumManager.getAlbum()[i].getName() == nameAlbum) {
+            flagCheck = true;
             console.log(`1. ID: ${albumManager.getAlbum()[i].getId()}
             2. Name: ${albumManager.getAlbum()[i].getName()}
             3. Creator: ${albumManager.getAlbum()[i].getCreator().getUsername()}
@@ -817,6 +821,9 @@ function findAlbumByName() {
             }
             console.log(listSong);
         }
+    }
+    if(flagCheck == false){
+        console.log(`Album not found.`)
     }
 }
 
